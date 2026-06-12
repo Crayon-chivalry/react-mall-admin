@@ -1,0 +1,19 @@
+.page-header {
+  @include flex-between;
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 400;
+  color: $color-heading;
+}
+
+.des {
+  margin: $space-2 0 0;
+}

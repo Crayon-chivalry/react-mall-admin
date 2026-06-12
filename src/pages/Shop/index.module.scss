@@ -1,0 +1,59 @@
+.data {
+  display: flex;
+  gap: $space-6;
+
+  .data-total {
+    flex: 1;
+    padding: $space-6;
+    background-image: url("/src/assets/images/data-bg.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: rgba(255, 255, 255, 0.7);
+    border-radius: $radius-4 * 3;
+    overflow: hidden;
+
+    .total-amount {
+      margin: $space-1 0 $space-4;
+      font-size: 36px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .total-change {
+      display: inline-flex;
+      align-items: center;
+      gap: $space-1;
+      padding: $space-1 $space-4;
+      border-radius: 99px;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  .data-list {
+    flex: 1.5;
+    display: flex;
+    gap: $space-6;
+
+    .data-item {
+      flex: 1;
+      padding: $space-4;
+      background-color: #fff;
+      border-radius: $radius-4;
+
+      .item-icon {
+        width: 40px;
+      }
+
+      .item-label {
+        margin: $space-4 0 $space-1;
+      }
+
+      .item-value {
+        font-size: 24px;
+        font-weight: 600;
+        color: $color-heading;
+      }
+    }
+  }
+}

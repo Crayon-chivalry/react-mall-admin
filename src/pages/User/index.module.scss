@@ -1,0 +1,27 @@
+.top {
+  @include flex-between;
+  padding: $space-1 * 9 $space-1 * 8;
+  border-radius: $radius-1 * 8;
+  background-color: $color-primary;
+  color: #fff;
+
+  .top-title {
+    font-size: 36px;
+    font-weight: 700;
+  }
+
+  .top-label {
+    margin-top: $space-2;
+    color: #d4e3ff;
+    font-weight: 100;
+  }
+
+  .total {
+    text-align: right;
+
+    .total-label {
+      color: #d4e3ff;
+      font-weight: 100;
+    }
+  }
+}
