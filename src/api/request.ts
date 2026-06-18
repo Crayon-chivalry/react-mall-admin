@@ -1,6 +1,7 @@
 import axios from "axios";
 import { message } from 'antd';
 
+import useUserStore from '@/store/userStore';
 import type { ApiResponse } from './types'
 
 const request = axios.create({
@@ -10,8 +11,7 @@ const request = axios.create({
 
 // 请求拦截器
 request.interceptors.request.use((config) => {
-  console.log('config', config)
-  const token = localStorage.getItem('token');
+  const token = useUserStore.getState().token
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

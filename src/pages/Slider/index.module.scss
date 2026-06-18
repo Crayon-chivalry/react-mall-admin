@@ -1,0 +1,50 @@
+.banners {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $space-6;
+  
+  .banner {
+    border-radius: $radius-6;
+    overflow: hidden;
+    background-color: #fff;
+  }
+
+  .banner-header {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .banner-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .banner-content {
+    padding: $space-4;
+    
+    .banner-title {
+      font-size: 16px;
+      color: $color-heading;
+    }
+
+    .banner-link {
+      margin-top: $space-2;
+      font-size: 12px;
+    }
+
+    .banner-row {
+      margin-top: $space-3;
+    }
+    
+    .banner-col {
+      font-size: 12px;
+    }
+
+    .banner-label {
+      color: $color-text-ses;
+    }
+  }
+}

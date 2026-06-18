@@ -4,7 +4,7 @@ import { Layout, Breadcrumb, Dropdown } from "antd";
 import type { MenuProps } from 'antd';
 import { BellOutlined, QuestionCircleOutlined, DownOutlined } from '@ant-design/icons';
 
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 
 const { Header } = Layout;
 

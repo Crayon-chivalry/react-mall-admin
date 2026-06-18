@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Menu, Layout } from 'antd';
-import { HomeOutlined, UserOutlined, ShoppingOutlined, SettingOutlined } from '@ant-design/icons';
+import { HomeOutlined, UserOutlined, ShoppingOutlined, SettingOutlined, PictureOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 
-import styles from './index.module.scss';
+import styles from '../index.module.scss';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -30,6 +30,11 @@ const items: MenuItem[] = [
       { key: '/shop', label: '商品列表' },
       { key: '/order', label: '订单列表' },
     ],
+  },
+  {
+    key: '/slider',
+    label: '轮播图管理',
+    icon: <PictureOutlined />,
   },
   {
     key: '/setting',

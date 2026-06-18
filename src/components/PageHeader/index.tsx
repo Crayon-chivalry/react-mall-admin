@@ -3,7 +3,7 @@ import styles from './index.module.scss'
 
 type PageHeaderProps = {
   title: string
-  des: string
+  des?: string
   children?: ReactNode
 }
 

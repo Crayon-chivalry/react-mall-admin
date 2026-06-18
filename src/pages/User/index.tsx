@@ -1,79 +1,15 @@
-import { Statistic, Table, type TableProps, Tag } from "antd";
+import { useEffect, useRef, useState } from "react";
+import { Statistic, Table, Avatar, type TableProps, Tag } from "antd";
 
-import TableFiltering from '@/components/TableFiltering'
-import { type FilterItem, type FormValues } from "@/components/TableFiltering/filterTypes";
+import UserForm, { type UserFormRef } from "./components/UserForm";
+import TableFiltering from "@/components/TableFiltering";
+import {
+  type FilterItem,
+  type FormValues,
+} from "@/components/TableFiltering/filterTypes";
 import styles from "./index.module.scss";
-
-interface DataType {
-  key: string;
-  userid: string;
-  name: string;
-  avatar: string;
-  phone: string;
-  status: 1 | 2;
-}
-
-const columns: TableProps<DataType>["columns"] = [
-  {
-    title: "头像",
-    dataIndex: "avatar",
-    key: "avatar",
-    render: () => (
-      <img src='/src/assets/images/tx.png' width={40} />
-    )
-  },
-  {
-    title: "用户名",
-    dataIndex: "userid",
-    key: "userid",
-  },
-  {
-    title: "姓名",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "手机号",
-    dataIndex: "phone",
-    key: "phone",
-  },
-  {
-    title: "状态",
-    dataIndex: "status",
-    key: "status",
-    render: (_, { status }) => (
-      renderStatusTag(status)
-    )
-  },
-  {
-    title: '操作',
-    dataIndex: 'operate',
-    key: 'operate',
-    render: () => (
-      <a>编辑</a>
-    )
-  }
-];
-
-// 数据
-const data: DataType[] = [
-  {
-    key: '1',
-    userid: 'admin',
-    name: '胡彦斌',
-    avatar: "tx.png",
-    phone: "14152526363",
-    status: 1
-  },
-  {
-    key: '2',
-    userid: '123',
-    name: '123',
-    avatar: "tx.png",
-    phone: "16152526363",
-    status: 2
-  }
-]
+import { userApi } from "@/api/userApi";
+import { type UserItem } from "@/api/types"
 
 // 筛选配置
 const filterList: FilterItem[] = [
@@ -81,11 +17,11 @@ const filterList: FilterItem[] = [
     label: "用户名",
     name: "userid",
     placeholder: "请输入用户名",
-    type: "input"
+    type: "input",
   },
   {
     label: "姓名",
-    name: "name",
+    name: "nickname",
     placeholder: "请输入姓名",
     type: "input",
   },
@@ -105,28 +41,78 @@ const filterList: FilterItem[] = [
       { label: "正常", value: 1 },
       { label: "冻结", value: 2 },
     ],
-    defaultValue: 99
-  }
-]
+    defaultValue: 99,
+  },
+];
 
 // 状态列表
 const statusList = [
-  { label: '正常', value: 1, color: 'processing' },
-  { label: '冻结', value: 2, color: 'warning' }
-]
+  { label: "正常", value: 1, color: "processing" },
+  { label: "冻结", value: 2, color: "warning" },
+];
 
 // 渲染状态标签
-function renderStatusTag(status: DataType["status"]) {
-  const item = statusList.find(i => i.value === status);
-  const color = item?.color ?? 'default';
-  const label = item?.label ?? '未知';
+function renderStatusTag(status: UserItem["status"]) {
+  const item = statusList.find((i) => i.value === status);
+  const color = item?.color ?? "default";
+  const label = item?.label ?? "未知";
   return <Tag color={color}>{label}</Tag>;
 }
 
 const User = () => {
+  // 表单项
+  const columns: TableProps<UserItem>["columns"] = [
+    {
+      title: "头像",
+      dataIndex: "avatar",
+      key: "avatar",
+      render: (_, {avatar}) => <Avatar src={avatar} size={40} />,
+    },
+    {
+      title: "手机号",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "姓名",
+      dataIndex: "nickname",
+      key: "nickname",
+    },
+    {
+      title: "状态",
+      dataIndex: "status",
+      key: "status",
+      render: (_, { status }) => renderStatusTag(status),
+    },
+    {
+      title: "操作",
+      dataIndex: "operate",
+      key: "operate",
+      render: (_, item) => <a onClick={() => handleShowForm(item)}>编辑</a>,
+    },
+  ];
+
+  const formRef = useRef<UserFormRef>(null);
+  const [list, setList] = useState([]);
+
   const onSearch = (values: FormValues) => {
-    console.log(values)
-  }
+    console.log(values);
+  };
+
+  // 显示编辑表单
+  const handleShowForm = (item: UserItem) => {
+    formRef.current?.showDrawer(item)
+  };
+
+  // 获取用户列表
+  const getList = async () => {
+    const { data: res } = await userApi.list({ page: 1, pageSize: 10 });
+    setList(res.data.list);
+  };
+
+  useEffect(() => {
+    getList();
+  }, []);
 
   return (
     <div className={styles["column-gap"]}>
@@ -149,8 +135,11 @@ const User = () => {
       <TableFiltering filterList={filterList} onSubmit={onSearch} />
 
       <div className={styles["table-card"]}>
-        <Table<DataType> columns={columns} dataSource={data} />
+        <Table<UserItem> columns={columns} dataSource={list} rowKey="id" />
       </div>
+
+      {/* 用户编辑 */}
+      <UserForm ref={formRef} />
     </div>
   );
 };

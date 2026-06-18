@@ -7,6 +7,8 @@ import Dashboard from '@/pages/Dashboard'
 import User from '@/pages/User'
 import Shop from '@/pages/Shop'
 import Setting from '@/pages/Setting'
+import Slider from '@/pages/Slider'
+import NotFound from '@/pages/NotFound'
 
 const router = createBrowserRouter([
   {
@@ -32,12 +34,20 @@ const router = createBrowserRouter([
       {
         path: '/setting',
         element: <Setting />
+      },
+      {
+        path: '/slider',
+        element: <Slider />
       }
     ]
   },
   {
     path: '/login',
     element: <Login />
+  },
+  {
+    path: '*',
+    element: <NotFound />
   }
 ])
 

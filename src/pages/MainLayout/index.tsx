@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom';
 
 import { Layout } from 'antd';
-import MainSider from './MainSider';
-import MainHeader from './MainHeader'
+import MainSider from './components/MainSider';
+import MainHeader from './components/MainHeader'
 
 import styles from './index.module.scss'
 
