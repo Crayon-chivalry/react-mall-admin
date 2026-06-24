@@ -77,7 +77,6 @@ const SliderForm = forwardRef<SliderFormRef, SliderFormProps>((props, ref) => {
         form={form}
         layout="vertical"
         className={styles["form"]}
-        initialValues={{sort: 1, isEnabled: true}}
         onFinish={onFinish}
       >
         <Form.Item<FieldType> label="标题" name="title" rules={rules.title}>

@@ -1,5 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import { Statistic, Table, Avatar, type TableProps, Tag } from "antd";
+import {
+  Statistic,
+  Table,
+  Avatar,
+  Tag,
+  Flex,
+  Button,
+  Divider,
+  App,
+  type TableProps,
+  type TablePaginationConfig,
+} from "antd";
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 
 import UserForm, { type UserFormRef } from "./components/UserForm";
 import TableFiltering from "@/components/TableFiltering";
@@ -9,26 +21,23 @@ import {
 } from "@/components/TableFiltering/filterTypes";
 import styles from "./index.module.scss";
 import { userApi } from "@/api/userApi";
-import { type UserItem } from "@/api/types"
+import { type Pagination, type UserItem, type UserListParams } from "@/api/types";
+
+type TableRowSelection<T extends object = object> =
+  TableProps<T>["rowSelection"];
 
 // 筛选配置
 const filterList: FilterItem[] = [
   {
-    label: "用户名",
-    name: "userid",
-    placeholder: "请输入用户名",
+    label: "手机号",
+    name: "phone",
+    placeholder: "请输入手机号",
     type: "input",
   },
   {
     label: "姓名",
     name: "nickname",
     placeholder: "请输入姓名",
-    type: "input",
-  },
-  {
-    label: "手机号",
-    name: "phone",
-    placeholder: "请输入手机号",
     type: "input",
   },
   {
@@ -66,7 +75,7 @@ const User = () => {
       title: "头像",
       dataIndex: "avatar",
       key: "avatar",
-      render: (_, {avatar}) => <Avatar src={avatar} size={40} />,
+      render: (_, { avatar }) => <Avatar src={avatar} size={40} />,
     },
     {
       title: "手机号",
@@ -92,27 +101,82 @@ const User = () => {
     },
   ];
 
-  const formRef = useRef<UserFormRef>(null);
-  const [list, setList] = useState([]);
+  const { message } = App.useApp();
+  const formRef = useRef<UserFormRef>(null)
+  const [list, setList] = useState<UserItem[]>([]);
+  const [pagination, setPagination] = useState<Pagination>({
+    page: 1,
+    pageSize: 10,
+    total: 0,
+  });
+  const [searchParams, setSearchParams] = useState<Partial<UserListParams>>({});
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
+  // 搜索
   const onSearch = (values: FormValues) => {
-    console.log(values);
+    const params: Partial<UserListParams> = {
+      ...(values.phone ? { phone: Number(values.phone) } : {}),
+      ...(values.nickname ? { nickname: String(values.nickname) } : {}),
+      ...(values.status !== undefined && values.status !== '' && values.status !== 99
+        ? { status: Number(values.status) }
+        : {}),
+    };
+
+    setSearchParams(params);
+    getList(1, pagination.pageSize, params);
   };
 
-  // 显示编辑表单
-  const handleShowForm = (item: UserItem) => {
-    formRef.current?.showDrawer(item)
+  // 表格行选中项发生变化
+  const onSelectChange = async (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
   };
+
+  // 表格行选择配置
+  const rowSelection: TableRowSelection<UserItem> = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  // 显示添加表单
+  const handleShowForm = (item?: UserItem) => {
+    formRef.current?.showDrawer(item)
+  }
 
   // 获取用户列表
-  const getList = async () => {
-    const { data: res } = await userApi.list({ page: 1, pageSize: 10 });
+  const getList = async (
+    page = pagination.page,
+    pageSize = pagination.pageSize,
+    params: Partial<UserListParams> = searchParams,
+  ) => {
+    const { data: res } = await userApi.list({
+      page,
+      pageSize,
+      ...params,
+    });
     setList(res.data.list);
+    setPagination(res.data.pagination);
   };
+
+  // 添加 / 修改成功 重新获取数据
+  const onSuccess = () => {
+    getList()
+  };
+
+  const handleDel = async () => {
+    const { data: res } = await userApi.deletes(selectedRowKeys.map(key => String(key)))
+    message.success(res.message);
+    getList()
+  }
 
   useEffect(() => {
     getList();
   }, []);
+
+  const handleTableChange = (tablePagination: TablePaginationConfig) => {
+    const nextPage = tablePagination.current ?? 1;
+    const nextPageSize = tablePagination.pageSize ?? 10;
+    getList(nextPage, nextPageSize);
+  };
 
   return (
     <div className={styles["column-gap"]}>
@@ -126,7 +190,7 @@ const User = () => {
         <div className={styles["total"]}>
           <div className={styles["total-label"]}>活跃用户总数</div>
           <Statistic
-            value={112893}
+            value={pagination.total}
             valueStyle={{ color: "#fff", fontSize: "48px", lineHeight: "48px" }}
           />
         </div>
@@ -135,11 +199,31 @@ const User = () => {
       <TableFiltering filterList={filterList} onSubmit={onSearch} />
 
       <div className={styles["table-card"]}>
-        <Table<UserItem> columns={columns} dataSource={list} rowKey="id" />
+        <Flex align="center" gap="middle">
+          <Button color="primary" variant="solid" icon={<PlusOutlined />} onClick={() => handleShowForm()}>
+            添加
+          </Button>
+          <Button color="danger" variant="solid" icon={<DeleteOutlined />} onClick={handleDel}>
+            删除
+          </Button>
+        </Flex>
+        <Divider />
+        <Table<UserItem>
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={list}
+          rowKey="userId"
+          pagination={{
+            current: pagination.page,
+            pageSize: pagination.pageSize,
+            total: pagination.total,
+          }}
+          onChange={handleTableChange}
+        />
       </div>
 
-      {/* 用户编辑 */}
-      <UserForm ref={formRef} />
+      {/* 用户表单 */}
+      <UserForm ref={formRef} onSuccess={onSuccess} />
     </div>
   );
 };

@@ -27,6 +27,7 @@ const items: MenuItem[] = [
     label: '商城管理',
     icon: <ShoppingOutlined />,
     children: [
+      { key: '/categorize', label: '分类管理' },
       { key: '/shop', label: '商品列表' },
       { key: '/order', label: '订单列表' },
     ],

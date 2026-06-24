@@ -1,7 +1,21 @@
+// 接口结构
 export interface ApiResponse<T = any> {
   code: number
   message: string
   data: T
+}
+
+// 分页结构
+export interface Pagination {
+  page: number
+  pageSize: number
+  total: number
+}
+
+// 列表返回结构
+export interface ListResponse<T> {
+  list: T[]
+  pagination: Pagination
 }
 
 // 基本分页
@@ -23,12 +37,15 @@ export interface UserListParams extends BaseListParams {
 }
 
 export interface UserItem {
-  userid: string
+  id: number
+  userId: string
   nickname: string
   phone: string
   status: 1 | 2
   avatar: string
-  createdAt: string
+  password: string
+  payPassword: string
+  createdAt?: string
 }
 
 // 轮播
@@ -50,4 +67,20 @@ export interface SliderItem extends SliderParams {
 export interface SliderListParams extends BaseListParams {
   title?: string
   isEnabled?: boolean
+}
+
+// 分类
+export interface CategoriesItem {
+  id: number
+  name: string
+  icon: string
+  isVisible: boolean
+  parentId: number
+  sort: number
+}
+
+export interface CategoriesListParams extends BaseListParams {
+  parentId?: number
+  isVisible?: boolean
+  tree?: boolean
 }

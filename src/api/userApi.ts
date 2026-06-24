@@ -1,5 +1,5 @@
 import request from "./request";
-import type { ApiResponse, LoginParams, UserListParams } from "./types";
+import type { ApiResponse, ListResponse, LoginParams, UserItem, UserListParams } from "./types";
 
 export const userApi = {
   // 登录
@@ -9,6 +9,21 @@ export const userApi = {
 
   // 获取用户列表
   list: (params: UserListParams) => {
-    return request.get<ApiResponse>('/users', {params});
+    return request.get<ApiResponse<ListResponse<UserItem>>>('/users', {params});
+  },
+
+  // 添加用户
+  add: (params: UserItem) => {
+    return request.post<ApiResponse>('/users', params);
+  },
+
+  // 修改用户信息
+  update: (userId: string, params: UserItem) => {
+    return request.patch<ApiResponse>(`/users/${userId}`, params)
+  },
+
+  // 删除用户
+  deletes: (userIds: string[]) => {
+    return request.delete<ApiResponse>(`/users`, { data: { userIds } })
   }
 };
