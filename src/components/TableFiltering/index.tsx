@@ -1,3 +1,5 @@
+// 未解决 label 会被遮住的问题
+
 import { Button, Form, Input, Row, Col, Select, DatePicker, Flex } from "antd";
 import dayjs from "dayjs";
 
@@ -30,7 +32,7 @@ const TableFiltering = ({ filterList, onSubmit }: TableFilteringProps) => {
   };
 
   return (
-    <div className={styles["app-card"]}>
+    <div className={styles["filter-card"]}>
       <Form labelCol={{ span: 6, style: { whiteSpace: 'nowrap' } }} form={form} onFinish={onFinish}>
         <Row gutter={24}>
           {filterList.map((item) => (
@@ -50,7 +52,7 @@ const TableFiltering = ({ filterList, onSubmit }: TableFilteringProps) => {
             <Form.Item label={null}>
               <Flex gap="middle" wrap>
                 <Button type="primary" htmlType="submit">
-                  搜索
+                  筛选
                 </Button>
                 <Button color="primary" variant="outlined" onClick={onReset}>
                   重置

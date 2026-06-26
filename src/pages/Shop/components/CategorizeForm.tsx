@@ -7,7 +7,7 @@ import { categoriesApi } from "@/api/categoriesApi";
 import type { CategoriesItem } from "@/api/types";
 
 export interface CategorizeRef {
-  showDrawer: (item?: CategoriesItem) => void;
+  showDrawer: (item?: CategoriesItem, parentId?: number) => void;
 }
 
 type SliderFormProps = {
@@ -29,14 +29,14 @@ const SliderForm = forwardRef<CategorizeRef, SliderFormProps>((props, ref) => {
   const { onSuccess } = props;
 
   // 打开抽屉
-  const showDrawer = (item?: CategoriesItem) => {
-    getParentList()
+  const showDrawer = async (item?: CategoriesItem, parentId?: number) => {
+    await getParentList();
     setEditingItem(item ?? null);
     if (item) {
       form.setFieldsValue({ ...item });
     } else {
       form.resetFields();
-      form.setFieldsValue({ sort: 1, isVisible: true, parentId: 0 });
+      form.setFieldsValue({ sort: 1, isVisible: true, parentId: parentId || 0 });
     }
     setOpen(true);
   };
@@ -52,7 +52,6 @@ const SliderForm = forwardRef<CategorizeRef, SliderFormProps>((props, ref) => {
     const newOptions = res.data.map((item: CategoriesItem) => {
       return {label: item.name, value: item.id}
     })
-    console.log(newOptions)
     setOptions([{label: "顶级分类", value: 0}, ...newOptions])
   }
 

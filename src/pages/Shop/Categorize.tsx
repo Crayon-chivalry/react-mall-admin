@@ -1,12 +1,43 @@
-import { useEffect, useRef, useState } from 'react';
-import { Button, Tag, Image, Table, Flex, type TableProps, type TablePaginationConfig } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useEffect, useRef, useState } from "react";
+import {
+  Button,
+  Tag,
+  Image,
+  Table,
+  Flex,
+  App,
+  type TableProps,
+  Popconfirm,
+  type TablePaginationConfig,
+} from "antd";
+import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
-import PageHeader from '@/components/PageHeader'
-import CategorizeForm, { type CategorizeRef } from './components/CategorizeForm'
-import type { CategoriesItem, Pagination, CategoriesListParams } from '@/api/types'
-import { categoriesApi } from '@/api/categoriesApi'
-import styles from './index.module.scss'
+import PageHeader from "@/components/PageHeader";
+import TableFiltering from "@/components/TableFiltering";
+import {
+  type FilterItem,
+  type FormValues,
+} from "@/components/TableFiltering/filterTypes";
+import CategorizeForm, {
+  type CategorizeRef,
+} from "./components/CategorizeForm";
+import type {
+  CategoriesItem,
+  Pagination,
+  CategoriesListParams,
+} from "@/api/types";
+import { categoriesApi } from "@/api/categoriesApi";
+import styles from "./index.module.scss";
+
+// 筛选配置
+const filterList: FilterItem[] = [
+  {
+    label: "分类名称",
+    name: "keyword",
+    placeholder: "请输入关键词",
+    type: "input",
+  }
+];
 
 // 状态列表
 const statusList = [
@@ -30,7 +61,9 @@ const Categorize = () => {
       title: "图标",
       dataIndex: "avatar",
       key: "avatar",
-      render: (_, { icon }) => <Image src={icon} width={40} />,
+      render: (_, { parentId, icon }) => (
+        <Image src={icon} width={parentId === 0 ? 40 : 30} />
+      ),
     },
     {
       title: "名称",
@@ -49,14 +82,25 @@ const Categorize = () => {
       key: "operate",
       render: (_, item) => (
         <Flex gap="large" className={styles["table-operate"]}>
-          {item.parentId === 0 && <PlusOutlined onClick={() => handleShowForm()} />}
+          {item.parentId === 0 && (
+            <PlusOutlined onClick={() => handleShowForm(undefined, item.id)} />
+          )}
           <EditOutlined onClick={() => handleShowForm(item)} />
-          <DeleteOutlined style={{color: "#BA1A1A"}} onClick={() => handleDel(item.id)} />
+          <Popconfirm
+            title="提示"
+            description="确定要删除吗?"
+            onConfirm={() => handleDelete(item.id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <DeleteOutlined style={{ color: "#BA1A1A" }} />
+          </Popconfirm>
         </Flex>
       ),
     },
   ];
 
+  const { message } = App.useApp();
   const formRef = useRef<CategorizeRef>(null);
   const [list, setList] = useState<CategoriesItem[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
@@ -64,18 +108,30 @@ const Categorize = () => {
     pageSize: 10,
     total: 0,
   });
-  const [searchParams, setSearchParams] = useState<Partial<CategoriesListParams>>({});
+  const [searchParams, setSearchParams] = useState<
+    Partial<CategoriesListParams>
+  >({});
 
   // 显示表单抽屉
-  const handleShowForm = (item?: CategoriesItem) => {
-    formRef.current?.showDrawer(item);
-  }
+  const handleShowForm = (item?: CategoriesItem, parentId?: number) => {
+    formRef.current?.showDrawer(item, parentId);
+  };
 
   // 分页变化时触发
   const handleTableChange = (tablePagination: TablePaginationConfig) => {
     const nextPage = tablePagination.current ?? 1;
     const nextPageSize = tablePagination.pageSize ?? 10;
     getList(nextPage, nextPageSize);
+  };
+
+  // 筛选
+  const onSearch = (values: FormValues) => {
+    const params: Partial<CategoriesListParams> = {
+      ...(values.keyword ? { keyword: String(values.keyword) } : {})
+    };
+
+    setSearchParams(params);
+    getList(1, pagination.pageSize, params);
   };
 
   // 获取列表
@@ -98,18 +154,20 @@ const Categorize = () => {
   };
 
   // 删除分类
-  const handleDel = (id: number) => {
-    console.log(id)
-  }
+  const handleDelete = async (id: number) => {
+    const { data: res } = await categoriesApi.delete(id);
+    message.success(res.message);
+    getList();
+  };
 
   // 添加成功 / 编辑成功
   const onSuccess = () => {
-    getList()
-  }
+    getList();
+  };
 
   useEffect(() => {
-    getList()
-  }, [])
+    getList();
+  }, []);
 
   return (
     <div className={styles["column-gap"]}>
@@ -123,6 +181,8 @@ const Categorize = () => {
           添加分类
         </Button>
       </PageHeader>
+
+      <TableFiltering filterList={filterList} onSubmit={onSearch} />
 
       <div className={styles["table-card"]}>
         <Table<CategoriesItem>
@@ -141,7 +201,7 @@ const Categorize = () => {
       {/* 分类表单 */}
       <CategorizeForm ref={formRef} onSuccess={onSuccess} />
     </div>
-  )
-}
+  );
+};
 
-export default Categorize
+export default Categorize;

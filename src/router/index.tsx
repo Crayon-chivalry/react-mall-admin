@@ -9,6 +9,7 @@ import Shop from '@/pages/Shop'
 import Setting from '@/pages/Setting'
 import Slider from '@/pages/Slider'
 import Categorize from '@/pages/Shop/Categorize'
+import Logs from '@/pages/Logs'
 import NotFound from '@/pages/NotFound'
 
 const router = createBrowserRouter([
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: '/categorize',
         element: <Categorize />
+      },
+      {
+        path: '/logs',
+        element: <Logs />
       }
     ]
   },

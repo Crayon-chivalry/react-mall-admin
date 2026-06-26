@@ -1,45 +1,57 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Menu, Layout } from 'antd';
-import { HomeOutlined, UserOutlined, ShoppingOutlined, SettingOutlined, PictureOutlined } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Menu, Layout } from "antd";
+import {
+  HomeOutlined,
+  UserOutlined,
+  ShoppingOutlined,
+  SettingOutlined,
+  PictureOutlined,
+  ContainerOutlined,
+} from "@ant-design/icons";
+import type { MenuProps } from "antd";
 
-import styles from '../index.module.scss';
+import styles from "../index.module.scss";
 
-type MenuItem = Required<MenuProps>['items'][number];
+type MenuItem = Required<MenuProps>["items"][number];
 
 const { Sider } = Layout;
 
 const items: MenuItem[] = [
   {
-    key: '/',
-    label: '控制面板',
+    key: "/",
+    label: "控制面板",
     icon: <HomeOutlined />,
   },
   {
-    key: 'user',
-    label: '会员管理',
+    key: "user",
+    label: "会员管理",
     icon: <UserOutlined />,
-    children: [{ key: '/user', label: '用户列表' }],
+    children: [{ key: "/user", label: "用户列表" }],
   },
   {
-    key: 'shop',
-    label: '商城管理',
+    key: "shop",
+    label: "商城管理",
     icon: <ShoppingOutlined />,
     children: [
-      { key: '/categorize', label: '分类管理' },
-      { key: '/shop', label: '商品列表' },
-      { key: '/order', label: '订单列表' },
+      { key: "/categorize", label: "分类管理" },
+      { key: "/shop", label: "商品列表" },
+      { key: "/order", label: "订单列表" },
     ],
   },
   {
-    key: '/slider',
-    label: '轮播图管理',
+    key: "/slider",
+    label: "轮播图管理",
     icon: <PictureOutlined />,
   },
   {
-    key: '/setting',
-    label: '系统管理',
+    key: "/logs",
+    label: "活动日志",
+    icon: <ContainerOutlined />,
+  },
+  {
+    key: "/setting",
+    label: "系统管理",
     icon: <SettingOutlined />,
   },
 ];
@@ -48,11 +60,16 @@ const items: MenuItem[] = [
 const rootSubmenuKeys = items
   .filter((item): item is NonNullable<MenuItem> => Boolean(item))
   .filter(
-    (item): item is NonNullable<MenuItem> & { key: string; children: NonNullable<MenuItem>[] } =>
-      typeof item === 'object' &&
-      'key' in item &&
-      typeof item.key === 'string' &&
-      'children' in item &&
+    (
+      item,
+    ): item is NonNullable<MenuItem> & {
+      key: string;
+      children: NonNullable<MenuItem>[];
+    } =>
+      typeof item === "object" &&
+      "key" in item &&
+      typeof item.key === "string" &&
+      "children" in item &&
       Array.isArray(item.children),
   )
   .map((item) => item.key);
@@ -63,17 +80,17 @@ const pathOpenKeyMap = new Map<string, string>();
 for (const item of items) {
   if (
     !item ||
-    typeof item !== 'object' ||
-    !('key' in item) ||
-    typeof item.key !== 'string' ||
-    !('children' in item) ||
+    typeof item !== "object" ||
+    !("key" in item) ||
+    typeof item.key !== "string" ||
+    !("children" in item) ||
     !Array.isArray(item.children)
   ) {
     continue;
   }
 
   for (const child of item.children) {
-    if (!child || typeof child !== 'object' || typeof child.key !== 'string') {
+    if (!child || typeof child !== "object" || typeof child.key !== "string") {
       continue;
     }
 
@@ -128,14 +145,14 @@ const MainSider = () => {
   }, [location.pathname]);
 
   // 菜单项点击：跳转到对应路由（key 为字符串时）
-  const onMenuClick: MenuProps['onClick'] = ({ key }) => {
-    if (typeof key === 'string') navigate(key);
+  const onMenuClick: MenuProps["onClick"] = ({ key }) => {
+    if (typeof key === "string") navigate(key);
   };
 
   // 控制子菜单展开行为：
   // - 若最新展开的 key 是根菜单（存在 children），则保持手风琴行为（只展开该根菜单）
   // - 否则直接按 keys 设置（允许展开多个子菜单）
-  const onOpenChange: MenuProps['onOpenChange'] = (keys) => {
+  const onOpenChange: MenuProps["onOpenChange"] = (keys) => {
     const latestOpenKey = keys.find((key) => !openKeys.includes(key as string));
 
     if (!latestOpenKey || !rootSubmenuKeys.includes(latestOpenKey as string)) {
@@ -147,12 +164,16 @@ const MainSider = () => {
   };
 
   return (
-    <Sider className={styles['sider']} width="250">
-      <div className={styles['sider-top']}>
-        <img src="/src/assets/images/logo.png" alt="logo" className={styles['logo']} />
+    <Sider className={styles["sider"]} width="250">
+      <div className={styles["sider-top"]}>
+        <img
+          src="/src/assets/images/logo.png"
+          alt="logo"
+          className={styles["logo"]}
+        />
         <div>
-          <div className={styles['sider-title']}>管理系统</div>
-          <div className={styles['sider-label']}>management system</div>
+          <div className={styles["sider-title"]}>管理系统</div>
+          <div className={styles["sider-label"]}>management system</div>
         </div>
       </div>
 
@@ -161,7 +182,7 @@ const MainSider = () => {
         openKeys={openKeys}
         mode="inline"
         items={items}
-        className={styles['menu']}
+        className={styles["menu"]}
         onClick={onMenuClick}
         onOpenChange={onOpenChange}
       />

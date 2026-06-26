@@ -16,8 +16,8 @@ export interface InputFilterItem extends BaseFilterItem {
 
 export interface SelectFilterItem extends BaseFilterItem {
   type: "select";
-  options: Array<{ label: string; value: string | number }>;
-  defaultValue?: string | number;
+  options: Array<{ label: string; value: string | number | boolean }>;
+  defaultValue?: string | number | boolean;
 }
 
 export interface DateFilterItem extends BaseFilterItem {

@@ -80,7 +80,23 @@ export interface CategoriesItem {
 }
 
 export interface CategoriesListParams extends BaseListParams {
-  parentId?: number
-  isVisible?: boolean
-  tree?: boolean
+  keyword?: string
+  isVisible?: number | boolean
+}
+
+// 日志
+export interface LogsItem {
+  createdAt: string
+  action: string
+  module: string
+  operatorNickname: string
+  operatorPhone: number
+  operatorUserId: string
+  ip: string
+  type: string
+}
+
+export interface LogsListParams extends BaseListParams {
+  operatorPhone?: number
+  date?: string
 }

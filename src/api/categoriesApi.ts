@@ -20,5 +20,10 @@ export const categoriesApi = {
   // 修改
   update: (id: number, params: CategoriesItem) => {
     return request.patch<ApiResponse>(`/categories/${id}`, params)
+  },
+
+  // 删除
+  delete: (id: number) => {
+    return request.delete<ApiResponse>(`/categories/${id}`)
   }
 }
