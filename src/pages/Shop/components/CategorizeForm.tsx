@@ -2,7 +2,6 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 import { Drawer, Form, Input, InputNumber, Button, Switch, Select, App } from "antd";
 
 import UploadImages from "@/components/UploadImages";
-import styles from "../index.module.scss";
 import { categoriesApi } from "@/api/categoriesApi";
 import type { CategoriesItem } from "@/api/types";
 
@@ -78,7 +77,6 @@ const SliderForm = forwardRef<CategorizeRef, SliderFormProps>((props, ref) => {
       <Form
         form={form}
         layout="vertical"
-        className={styles["form"]}
         onFinish={onFinish}
       >
         <Form.Item<CategoriesItem> label="分类类型" name="parentId">

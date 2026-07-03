@@ -100,3 +100,38 @@ export interface LogsListParams extends BaseListParams {
   operatorPhone?: number
   date?: string
 }
+
+// 角色
+export interface RolesItem {
+  id: number
+  code: string
+  name: string
+  description: string
+  isEnabled: boolean
+  permissionIds: [number]
+  permissions: [PermissionItem]
+}
+
+// 菜单树
+export interface MenusItem {
+  id: number
+  name: string
+  code: string
+  type: number
+  parentId: number | null
+  path: string
+  component: string
+  icon: string
+  permissionCode: string
+  sort: number
+  isEnabled: boolean
+}
+
+// 权限
+export interface PermissionItem {
+  id: number
+  code: string
+  name: string
+  description: string
+  isEnabled: boolean
+}

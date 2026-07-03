@@ -6,8 +6,7 @@ import {
   UserOutlined,
   ShoppingOutlined,
   SettingOutlined,
-  PictureOutlined,
-  ContainerOutlined,
+  KeyOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 
@@ -25,9 +24,11 @@ const items: MenuItem[] = [
   },
   {
     key: "user",
-    label: "会员管理",
+    label: "用户管理",
     icon: <UserOutlined />,
-    children: [{ key: "/user", label: "用户列表" }],
+    children: [
+      { key: "/user", label: "用户列表" }
+    ],
   },
   {
     key: "shop",
@@ -40,19 +41,24 @@ const items: MenuItem[] = [
     ],
   },
   {
-    key: "/slider",
-    label: "轮播图管理",
-    icon: <PictureOutlined />,
+    key: "rbac",
+    label: "权限管理",
+    icon: <KeyOutlined />,
+    children: [
+      { key: "/roles", label: "角色管理" },
+      { key: "/permissions", label: "权限管理" },
+      { key: "/menus", label: "菜单管理" },
+    ]
   },
   {
-    key: "/logs",
-    label: "活动日志",
-    icon: <ContainerOutlined />,
-  },
-  {
-    key: "/setting",
+    key: "setting",
     label: "系统管理",
     icon: <SettingOutlined />,
+    children: [
+      { key: "/slider", label: "轮播图管理" },
+      { key: "/setting", label: "系统设置" },
+      { key: "/logs", label: "活动日志" },
+    ]
   },
 ];
 

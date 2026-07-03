@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Button,
-  Tag,
   Image,
   Table,
   Flex,
@@ -28,6 +27,7 @@ import type {
 } from "@/api/types";
 import { categoriesApi } from "@/api/categoriesApi";
 import styles from "./index.module.scss";
+import { createStatusTagRenderer } from "@/utils/status";
 
 // 筛选配置
 const filterList: FilterItem[] = [
@@ -45,13 +45,7 @@ const statusList = [
   { label: "已禁用", value: false, color: "warning" },
 ];
 
-// 渲染状态标签
-function renderStatusTag(status: CategoriesItem["isVisible"]) {
-  const item = statusList.find((i) => i.value === status);
-  const color = item?.color ?? "default";
-  const label = item?.label ?? "未知";
-  return <Tag color={color}>{label}</Tag>;
-}
+const renderStatusTag = createStatusTagRenderer<CategoriesItem["isVisible"]>(statusList);
 
 const Categorize = () => {
   // 表单项

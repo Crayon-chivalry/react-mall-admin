@@ -1,0 +1,19 @@
+.roles-panel {
+  padding: $space-1 * 8;
+  border-radius: $radius-4;
+  background-color: $color-primary;
+
+  h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 30px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: $space-2 0 $space-4 0;
+    width: 60%;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+}

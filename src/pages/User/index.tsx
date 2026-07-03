@@ -3,7 +3,6 @@ import {
   Statistic,
   Table,
   Avatar,
-  Tag,
   Flex,
   Button,
   Divider,
@@ -22,6 +21,7 @@ import {
 import styles from "./index.module.scss";
 import { userApi } from "@/api/userApi";
 import { type Pagination, type UserItem, type UserListParams } from "@/api/types";
+import { createStatusTagRenderer } from "@/utils/status";
 
 type TableRowSelection<T extends object = object> =
   TableProps<T>["rowSelection"];
@@ -55,18 +55,12 @@ const filterList: FilterItem[] = [
 ];
 
 // 状态列表
-const statusList = [
+const statusList: Array<{ label: string; value: UserItem["status"]; color: string }> = [
   { label: "正常", value: 1, color: "processing" },
   { label: "冻结", value: 2, color: "warning" },
 ];
 
-// 渲染状态标签
-function renderStatusTag(status: UserItem["status"]) {
-  const item = statusList.find((i) => i.value === status);
-  const color = item?.color ?? "default";
-  const label = item?.label ?? "未知";
-  return <Tag color={color}>{label}</Tag>;
-}
+const renderStatusTag = createStatusTagRenderer<UserItem["status"]>(statusList);
 
 const User = () => {
   // 表单项
