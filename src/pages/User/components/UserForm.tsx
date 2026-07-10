@@ -7,7 +7,7 @@ import styles from "../index.module.scss";
 import { userApi } from "@/api/userApi";
 
 export interface UserFormRef {
-  showDrawer: (item?: UserItem) => void;
+  showDrawer: (item?: UserItem, role?: string) => void;
 }
 
 type UserFormProps = {
@@ -17,7 +17,8 @@ type UserFormProps = {
 // 表单验证规则
 const rules = {
   avatar: [{ required: true, message: "请上传头像" }],
-  phone: [{ required: true, message: "请输入标题" }],
+  phone: [{ required: true, message: "请输入手机号" }],
+  account: [{ required: true, message: "请输入账号" }],
   nickname: [{ required: true, message: "请输入姓名" }],
   password: [{ required: true, message: "请输入登录密码" }],
   payPassword: [{ required: true, message: "请输入支付密码" }],
@@ -28,11 +29,16 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>((props, ref) => {
   const [form] = Form.useForm<UserItem>();
   const [open, setOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<UserItem | null>(null);
+  // 角色类型，不同表单，customer: 客户，admin: 管理员
+  const [role, setRole] = useState<string>("customer");
   const { onSuccess } = props;
 
   // 打开抽屉
-  const showDrawer = (item?: UserItem) => {
+  const showDrawer = (item?: UserItem, role?: string) => {
     setEditingItem(item ?? null);
+    if (role) {
+      setRole(role);
+    }
     if (item) {
       form.setFieldsValue({ ...item });
     } else {
@@ -44,6 +50,7 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>((props, ref) => {
 
   // 关闭抽屉
   const onClose = () => {
+    form.resetFields();
     setOpen(false);
   };
 
@@ -51,7 +58,9 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>((props, ref) => {
   const onFinish = async (values: UserItem) => {
     const { data: res } = editingItem
       ? await userApi.update(editingItem.userId, values)
-      : await userApi.add(values);
+      : role === "admin"
+        ? await userApi.addAdmin(values)
+        : await userApi.add(values);
     message.success(res.message);
     onSuccess?.(res.data);
     onClose();
@@ -62,7 +71,11 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>((props, ref) => {
   }));
 
   return (
-    <Drawer title={editingItem ? "编辑用户" : "添加用户"} onClose={onClose} open={open}>
+    <Drawer
+      title={editingItem ? "编辑用户" : "新增用户"}
+      onClose={onClose}
+      open={open}
+    >
       <Form
         form={form}
         layout="vertical"
@@ -77,9 +90,16 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>((props, ref) => {
             }}
           />
         </Form.Item>
-        <Form.Item<UserItem> label="手机号" name="phone" rules={rules.phone}>
-          <Input size="large" placeholder="请输入手机号" />
-        </Form.Item>
+        {role === "customer" ? (
+          <Form.Item<UserItem> label="手机号" name="phone" rules={rules.phone}>
+            <Input size="large" placeholder="请输入手机号" />
+          </Form.Item>
+        ) : (
+          <Form.Item<UserItem> label="账号" name="account" rules={rules.account}>
+            <Input size="large" placeholder="请输入账号" />
+          </Form.Item>
+        )}
+
         <Form.Item<UserItem>
           label="姓名"
           name="nickname"
@@ -94,13 +114,15 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>((props, ref) => {
         >
           <Input size="large" type="password" placeholder="请输入登录密码" />
         </Form.Item>
-        <Form.Item<UserItem>
-          label="支付密码"
-          name="payPassword"
-          rules={editingItem ? [] : rules.payPassword}
-        >
-          <Input size="large" type="password" placeholder="请输入支付密码" />
-        </Form.Item>
+        {role === "customer" && (
+          <Form.Item<UserItem>
+            label="支付密码"
+            name="payPassword"
+            rules={editingItem ? [] : rules.payPassword}
+          >
+            <Input size="large" type="password" placeholder="请输入支付密码" />
+          </Form.Item>
+        )}
         <Form.Item<UserItem>
           label="状态"
           name="status"

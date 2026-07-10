@@ -9,13 +9,13 @@ import styles from "./index.module.scss";
 
 // 表单验证规则
 const rules = {
-  phone: [{ required: true, message: "请输入账号" }],
+  account: [{ required: true, message: "请输入账号" }],
   password: [{ required: true, message: "请输入密码" }],
 };
 
 // 定义表单字段类型
 type FieldType = {
-  phone: string;
+  account: string;
   password: string;
 };
 
@@ -51,8 +51,8 @@ const Login = () => {
           >
             <Form.Item<FieldType>
               label="账号"
-              name="phone"
-              rules={rules.phone}
+              name="account"
+              rules={rules.account}
             >
               <Input size="large" placeholder="请输入账号" />
             </Form.Item>

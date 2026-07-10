@@ -1,0 +1,71 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.page-danger {
+  background:
+    radial-gradient(circle at top, rgba(186, 26, 26, 0.08), transparent 35%),
+    linear-gradient(180deg, #fff7f5 0%, #ffffff 100%);
+}
+
+.page-info {
+  background:
+    radial-gradient(circle at top, rgba(24, 99, 242, 0.08), transparent 35%),
+    linear-gradient(180deg, #f7faff 0%, #ffffff 100%);
+}
+
+.card {
+  text-align: center;
+  border-radius: 24px;
+  background: #fff;
+}
+
+.card-danger {
+  width: min(520px, 100%);
+  padding: 48px 32px;
+  box-shadow: 0 24px 80px rgba(135, 23, 23, 0.12);
+}
+
+.card-info {
+  width: min(560px, 100%);
+  padding: 40px 32px 48px;
+  box-shadow: 0 24px 80px rgba(24, 99, 242, 0.12);
+}
+
+.image {
+  width: min(320px, 100%);
+  margin: 0 auto 8px;
+  display: block;
+}
+
+.code {
+  font-size: 72px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.code-danger {
+  color: #ba1a1a;
+}
+
+.code-info {
+  color: #1863f2;
+}
+
+.title {
+  margin-top: 16px;
+  color: #1f1f1f;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.desc {
+  margin: 16px 0 32px;
+  color: #666;
+  font-size: 16px;
+  line-height: 1.75;
+}

@@ -10,19 +10,19 @@ import {
   App,
 } from "antd";
 
-import type { MenusItem } from "@/api/types";
+import type { MenuItem } from "@/api/types";
 import { rbacApi } from "@/api/rbacApi";
 
 export interface MenusFormRef {
-  showDrawer: (item?: MenusItem, defaultValues?: Partial<MenusItem>) => void;
+  showDrawer: (item?: MenuItem, defaultValues?: Partial<MenuItem>) => void;
 }
 
 type MenusFormProps = {
-  menusList?: MenusItem[];
-  onSuccess?: (item?: MenusItem) => void;
+  menusList?: MenuItem[];
+  onSuccess?: (item?: MenuItem) => void;
 };
 
-type MenuTreeItem = MenusItem & {
+type MenuTreeItem = MenuItem & {
   children?: MenuTreeItem[];
 };
 
@@ -39,7 +39,7 @@ const rules = {
 };
 
 // 过滤掉操作类型的菜单，并递归处理子菜单
-const filterMenusTree = (list: MenusItem[] = []): MenuTreeItem[] => {
+const filterMenusTree = (list: MenuItem[] = []): MenuTreeItem[] => {
   return (list as MenuTreeItem[])
     .filter((item) => item.type !== 3)
     .map((item) => ({
@@ -50,17 +50,17 @@ const filterMenusTree = (list: MenusItem[] = []): MenuTreeItem[] => {
 
 const MenusForm = forwardRef<MenusFormRef, MenusFormProps>((props, ref) => {
   const { message } = App.useApp();
-  const [form] = Form.useForm<MenusItem>();
+  const [form] = Form.useForm<MenuItem>();
   const [open, setOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<MenusItem | null>(null);
+  const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const { onSuccess } = props;
   const currentType = Form.useWatch("type", form);
   const parentMenusTree = filterMenusTree(props.menusList);
 
   // 打开抽屉
   const showDrawer = async (
-    item?: MenusItem,
-    defaultValues?: Partial<MenusItem>,
+    item?: MenuItem,
+    defaultValues?: Partial<MenuItem>,
   ) => {
     setEditingItem(defaultValues ? null : (item ?? null));
     if (item && !defaultValues) {
@@ -82,7 +82,7 @@ const MenusForm = forwardRef<MenusFormRef, MenusFormProps>((props, ref) => {
   };
 
   // 提交
-  const onFinish = async (values: MenusItem) => {
+  const onFinish = async (values: MenuItem) => {
     const { data: res } = editingItem
       ? await rbacApi.updateMenus(editingItem.id, values)
       : await rbacApi.addMenus(values);
@@ -102,7 +102,7 @@ const MenusForm = forwardRef<MenusFormRef, MenusFormProps>((props, ref) => {
       open={open}
     >
       <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Form.Item<MenusItem> label="菜单类型" name="type" rules={rules.type}>
+        <Form.Item<MenuItem> label="菜单类型" name="type" rules={rules.type}>
           <Radio.Group
             options={[
               { value: 1, label: "目录" },
@@ -111,21 +111,21 @@ const MenusForm = forwardRef<MenusFormRef, MenusFormProps>((props, ref) => {
             ]}
           />
         </Form.Item>
-        <Form.Item<MenusItem> label="菜单名称" name="name" rules={rules.name}>
+        <Form.Item<MenuItem> label="菜单名称" name="name" rules={rules.name}>
           <Input size="large" placeholder="请输入菜单名称" />
         </Form.Item>
-        <Form.Item<MenusItem> label="菜单编码" name="code" rules={rules.code}>
+        <Form.Item<MenuItem> label="菜单编码" name="code" rules={rules.code}>
           <Input size="large" placeholder="请输入菜单编码" />
         </Form.Item>
         {/* 类型目录才需要图标 */}
         {currentType === 1 && (
-          <Form.Item<MenusItem> label="图标" name="icon" rules={rules.icon}>
+          <Form.Item<MenuItem> label="图标" name="icon" rules={rules.icon}>
             <Input size="large" placeholder="请输入图标名称" />
           </Form.Item>
         )}
         {/* 类型除目录都需要设置父级菜单和权限 */}
         {currentType !== 1 && (
-          <Form.Item<MenusItem>
+          <Form.Item<MenuItem>
             label="父级菜单"
             name="parentId"
             rules={rules.parentId}
@@ -140,14 +140,14 @@ const MenusForm = forwardRef<MenusFormRef, MenusFormProps>((props, ref) => {
         {/* 类型菜单需要设置路由和组件 */}
         {currentType == 2 && (
           <>
-            <Form.Item<MenusItem>
+            <Form.Item<MenuItem>
               label="路由路径"
               name="path"
               rules={rules.path}
             >
               <Input size="large" placeholder="请输入路由路径" />
             </Form.Item>
-            <Form.Item<MenusItem>
+            <Form.Item<MenuItem>
               label="组件路径"
               name="component"
               rules={rules.component}
@@ -158,7 +158,7 @@ const MenusForm = forwardRef<MenusFormRef, MenusFormProps>((props, ref) => {
         )}
         {/* 类型操作项需要设置权限编码 */}
         {currentType === 3 && (
-          <Form.Item<MenusItem>
+          <Form.Item<MenuItem>
             label="权限编码"
             name="permissionCode"
             rules={rules.permissionCode}
@@ -166,7 +166,7 @@ const MenusForm = forwardRef<MenusFormRef, MenusFormProps>((props, ref) => {
             <Input size="large" placeholder="请输入权限编码" />
           </Form.Item>
         )}
-        <Form.Item<MenusItem> label="排序权重" name="sort">
+        <Form.Item<MenuItem> label="排序权重" name="sort">
           <InputNumber min={1} style={{ width: "100%" }} />
         </Form.Item>
         <Form.Item>

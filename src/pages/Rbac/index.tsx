@@ -54,13 +54,13 @@ const Roles = () => {
       dataIndex: "operate",
       key: "operate",
       render: (_, item) => (
-        <Flex gap="small" className={styles["table-operate"]}>
+        <Flex gap="small">
           <Button
             color="primary"
             variant="text"
             size="small"
             icon={<KeyOutlined />}
-            onClick={() => handleShowPermissionsForm()}
+            onClick={() => handleShowPermissionsForm(item)}
           >
             权限
           </Button>
@@ -105,19 +105,18 @@ const Roles = () => {
     formRef.current?.showDrawer(item);
   };
 
-  const handleShowPermissionsForm = () => {
-    permissionsFormRef.current?.showDrawer();
-  }
+  const handleShowPermissionsForm = (item: RolesItem) => {
+    permissionsFormRef.current?.showDrawer(item);
+  };
 
   // 提交成功刷新数据
-  const onSuccess = () => {
+  const refreshData = () => {
     getRoles();
   };
 
   // 获取角色
   const getRoles = async () => {
     const { data: res } = await rbacApi.roles();
-    console.log("角色", res);
     setRolesList(res.data);
   };
 
@@ -166,13 +165,14 @@ const Roles = () => {
           columns={columns}
           dataSource={rolesList}
           rowKey="id"
+          pagination={false}
         />
       </div>
 
       {/* 角色表单 */}
-      <RolesForm ref={formRef} onSuccess={onSuccess} />
+      <RolesForm ref={formRef} onSuccess={refreshData} />
       {/* 分配权限 */}
-      <PermissionsForm ref={permissionsFormRef} />
+      <PermissionsForm ref={permissionsFormRef} onSuccess={refreshData} />
     </div>
   );
 };

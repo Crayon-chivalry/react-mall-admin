@@ -26,7 +26,7 @@ export interface BaseListParams {
 
 // User
 export interface LoginParams {
-  phone: string
+  account: string
   password: string
 }
 
@@ -34,8 +34,10 @@ export interface UserListParams extends BaseListParams {
   phone?: number
   nickname?: string
   status?: number
+  role?: string
 }
 
+// 用户信息
 export interface UserItem {
   id: number
   userId: string
@@ -45,7 +47,9 @@ export interface UserItem {
   avatar: string
   password: string
   payPassword: string
-  createdAt?: string
+  createdAt: string
+  account?: string
+  adminRoles: RolesItem[]
 }
 
 // 轮播
@@ -110,10 +114,11 @@ export interface RolesItem {
   isEnabled: boolean
   permissionIds: [number]
   permissions: [PermissionItem]
+  menus: [MenuItem]
 }
 
 // 菜单树
-export interface MenusItem {
+export interface MenuItem {
   id: number
   name: string
   code: string
@@ -125,6 +130,7 @@ export interface MenusItem {
   permissionCode: string
   sort: number
   isEnabled: boolean
+  children?: MenuItem[]
 }
 
 // 权限

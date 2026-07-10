@@ -25,5 +25,10 @@ export const userApi = {
   // 删除用户
   deletes: (userIds: string[]) => {
     return request.delete<ApiResponse>(`/users`, { data: { userIds } })
+  },
+
+  // 添加管理员
+  addAdmin: (params: UserItem) => {
+    return request.post<ApiResponse>('/users/admin', params);
   }
 };

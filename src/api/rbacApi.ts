@@ -1,5 +1,5 @@
 import request from "./request";
-import type { ApiResponse, RolesItem, MenusItem, PermissionItem } from "./types";
+import type { ApiResponse, RolesItem, MenuItem, PermissionItem } from "./types";
 
 export const rbacApi = {
   // 角色列表
@@ -33,12 +33,12 @@ export const rbacApi = {
   },
 
   // 添加菜单
-  addMenus: (params: MenusItem) => {
+  addMenus: (params: MenuItem) => {
     return request.post<ApiResponse>("/rbac/menus", params)
   },
   
   // 更新菜单
-  updateMenus: (id: number, params: MenusItem) => {
+  updateMenus: (id: number, params: MenuItem) => {
     return request.patch<ApiResponse>(`/rbac/menus/${id}`, params)
   },
 
@@ -66,4 +66,14 @@ export const rbacApi = {
   deletePermissions: (id: number) => {
     return request.delete<ApiResponse>(`/rbac/permissions/${id}`)
   },
+
+  // 给管理员分配角色
+  assignRoles: (userId: string, roleIds: number[]) => {
+    return request.patch<ApiResponse>(`/rbac/users/${userId}/roles`, { roleIds })
+  },
+
+  // 获取当前管理员后台路由
+  routers: () => {
+    return request.get<ApiResponse>("/rbac/routes/current")
+  }
 }

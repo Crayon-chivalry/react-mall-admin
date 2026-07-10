@@ -3,10 +3,11 @@ import { Button, App, Table, Flex, Popconfirm, type TableProps } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import PageHeader from '@/components/PageHeader'
+import MenuIcon from '@/components/MenuIcon';
 import MenusForm, { type MenusFormRef } from './components/MenusForm'
 import styles from './index.module.scss'
 import { rbacApi } from '@/api/rbacApi';
-import type { MenusItem } from "@/api/types";
+import type { MenuItem } from "@/api/types";
 import { createStatusTagRenderer } from "@/utils/status";
 
 // 类型列表
@@ -16,12 +17,18 @@ const statusList = [
   { label: "操作项", value: 3, color: "warning" }
 ];
 
-const renderStatusTag = createStatusTagRenderer<MenusItem["type"]>(statusList);
+const renderStatusTag = createStatusTagRenderer<MenuItem["type"]>(statusList);
 
 const Menus = () => {
   // 表单项
-  const columns: TableProps<MenusItem>["columns"] = [
+  const columns: TableProps<MenuItem>["columns"] = [
     {},
+    {
+      title: "图标",
+      dataIndex: "icon",
+      key: "icon",
+      render: (_, { icon }) => <MenuIcon icon={icon} fallback={icon} />,
+    },
     {
       title: "菜单名称",
       dataIndex: "name",
@@ -64,15 +71,15 @@ const Menus = () => {
 
   const { message } = App.useApp();
   const formRef = useRef<MenusFormRef>(null);
-  const [menusList, setMenusList] = useState<MenusItem[]>([]);
+  const [menusList, setMenusList] = useState<MenuItem[]>([]);
 
   // 显示表单抽屉(新增、编辑)
-  const handleShowForm = (item?: MenusItem) => {
+  const handleShowForm = (item?: MenuItem) => {
     formRef.current?.showDrawer(item);
   };
 
   // 新增子菜单
-  const handleAddChild = (item: MenusItem) => {
+  const handleAddChild = (item: MenuItem) => {
     formRef.current?.showDrawer(undefined, {
       type: item.type === 1 ? 2 : 3,
       parentId: item.id,
@@ -115,7 +122,7 @@ const Menus = () => {
       </PageHeader>
 
       <div className={styles["table-card"]}>
-        <Table<MenusItem>
+        <Table<MenuItem>
           columns={columns}
           dataSource={menusList}
           rowKey="id"
