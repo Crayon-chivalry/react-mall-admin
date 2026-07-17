@@ -141,3 +141,18 @@ export interface PermissionItem {
   description: string
   isEnabled: boolean
 }
+
+// 金刚区
+export interface EntriesListParams extends BaseListParams {
+  title?: string
+  isEnabled?: boolean
+}
+
+export interface EntriesItem {
+  id: number
+  title: string
+  iconUrl: string
+  linkUrl: string
+  sort: number
+  isEnabled: boolean
+}

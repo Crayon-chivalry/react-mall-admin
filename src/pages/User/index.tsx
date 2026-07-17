@@ -56,7 +56,7 @@ const filterList: FilterItem[] = [
 
 // 状态列表
 const statusList: Array<{ label: string; value: UserItem["status"]; color: string }> = [
-  { label: "正常", value: 1, color: "processing" },
+  { label: "正常", value: 1, color: "green" },
   { label: "冻结", value: 2, color: "warning" },
 ];
 
@@ -131,7 +131,7 @@ const User = () => {
     onChange: onSelectChange,
   };
 
-  // 显示添加表单
+  // 显示表单
   const handleShowForm = (item?: UserItem) => {
     formRef.current?.showDrawer(item)
   }

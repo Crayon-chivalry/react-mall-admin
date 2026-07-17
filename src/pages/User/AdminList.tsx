@@ -63,9 +63,11 @@ const User = () => {
       key: "status",
       render: (_, { adminRoles }) => (
         <Flex wrap gap="small">
-          {adminRoles.map(item => 
-            <Tag color="red" key={item.id}>{ item.name }</Tag>
-          )}
+          {adminRoles.map((item) => (
+            <Tag color="red" key={item.id}>
+              {item.name}
+            </Tag>
+          ))}
         </Flex>
       ),
     },
@@ -104,11 +106,7 @@ const User = () => {
             okText="Yes"
             cancelText="No"
           >
-            <Button
-              color="danger"
-              variant="text"
-              size="small"
-            >
+            <Button color="danger" variant="text" size="small">
               删除
             </Button>
           </Popconfirm>
@@ -145,7 +143,7 @@ const User = () => {
   };
 
   // 显示分配角色表单
-  const handleShowAssignRoles = (item?: UserItem) => {
+  const handleShowAssignRoles = (item: UserItem) => {
     assignRolesRef.current?.showDrawer(item);
   };
 
@@ -171,9 +169,9 @@ const User = () => {
   // 删除
   const handleDel = async (id?: string) => {
     const { data: res } = await userApi.deletes(
-      id ? [String(id)] :
-      selectedRowKeys.map((key) => String(key))
+      id ? [String(id)] : selectedRowKeys.map((key) => String(key)),
     );
+    setSelectedRowKeys([]);
     message.success(res.message);
     getList();
   };
@@ -203,14 +201,17 @@ const User = () => {
 
       <div className={styles["table-card"]}>
         <Flex align="center" gap="middle">
-          <Button
-            color="danger"
-            variant="solid"
-            icon={<DeleteOutlined />}
-            onClick={() => handleDel()}
+          <Popconfirm
+            title="提示"
+            description="确定要删除吗?"
+            onConfirm={() => handleDel()}
+            okText="Yes"
+            cancelText="No"
           >
-            批量删除
-          </Button>
+            <Button color="danger" variant="solid" icon={<DeleteOutlined />}>
+              批量删除
+            </Button>
+          </Popconfirm>
         </Flex>
         <Divider />
         <Table<UserItem>

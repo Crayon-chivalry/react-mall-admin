@@ -1,6 +1,6 @@
 import { Dayjs } from "dayjs";
 
-export type FilterValue = string | number | Dayjs | undefined
+export type FilterValue = string | number | boolean | Dayjs | undefined
 export type FormValues = Record<string, FilterValue>
 
 export interface BaseFilterItem {
