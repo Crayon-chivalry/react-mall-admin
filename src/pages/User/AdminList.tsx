@@ -1,15 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  Table,
   Avatar,
   Flex,
   Button,
-  Divider,
   Popconfirm,
   Tag,
   App,
   type TableProps,
-  type TablePaginationConfig,
 } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 
@@ -18,28 +15,22 @@ import AssignRolesForm, {
 } from "./components/AssignRolesForm";
 import UserForm, { type UserFormRef } from "./components/UserForm";
 import PageHeader from "@/components/PageHeader";
-import styles from "./index.module.scss";
+import TableCard from "@/components/TableCard";
+import useTablePagination from "@/components/TableCard/useTablePagination";
+import useTableSelection from "@/components/TableCard/useTableSelection";
 import { userApi } from "@/api/userApi";
 import { type Pagination, type UserItem } from "@/api/types";
-import { createStatusTagRenderer } from "@/utils/status";
+import { defineStatusOptions, createStatusTagRenderer } from "@/utils/status";
 
-type TableRowSelection<T extends object = object> =
-  TableProps<T>["rowSelection"];
-
-// 状态列表
-const statusList: Array<{
-  label: string;
-  value: UserItem["status"];
-  color: string;
-}> = [
+// 状态列表配置
+const statusList = defineStatusOptions<UserItem["status"]>([
   { label: "正常", value: 1, color: "processing" },
   { label: "冻结", value: 2, color: "warning" },
-];
-
-const renderStatusTag = createStatusTagRenderer<UserItem["status"]>(statusList);
+])
+const renderStatusTag = createStatusTagRenderer(statusList);
 
 const User = () => {
-  // 表单项
+  // 配置项
   const columns: TableProps<UserItem>["columns"] = [
     {
       title: "头像",
@@ -82,7 +73,7 @@ const User = () => {
       dataIndex: "operate",
       key: "operate",
       render: (_, item) => (
-        <Flex gap="small" className={styles["table-operate"]}>
+        <Flex gap="small">
           <Button
             color="primary"
             variant="text"
@@ -124,20 +115,13 @@ const User = () => {
     pageSize: 10,
     total: 0,
   });
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-
-  // 表格行选中项发生变化
-  const onSelectChange = async (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  // 表格行选择配置
-  const rowSelection: TableRowSelection<UserItem> = {
+  const {
     selectedRowKeys,
-    onChange: onSelectChange,
-  };
+    rowSelection,
+    clearSelectedRowKeys,
+  } = useTableSelection<UserItem>();
 
-  // 显示添加表单
+  // 显示角色表单
   const handleShowForm = (item?: UserItem) => {
     formRef.current?.showDrawer(item, "admin");
   };
@@ -147,7 +131,7 @@ const User = () => {
     assignRolesRef.current?.showDrawer(item);
   };
 
-  // 获取用户列表
+  // 获取数据
   const getList = async (
     page = pagination.page,
     pageSize = pagination.pageSize,
@@ -171,23 +155,20 @@ const User = () => {
     const { data: res } = await userApi.deletes(
       id ? [String(id)] : selectedRowKeys.map((key) => String(key)),
     );
-    setSelectedRowKeys([]);
+    clearSelectedRowKeys();
     message.success(res.message);
     getList();
   };
+
+  // 分页变化获取数据
+  const { handleTableChange } = useTablePagination(getList);
 
   useEffect(() => {
     getList();
   }, []);
 
-  const handleTableChange = (tablePagination: TablePaginationConfig) => {
-    const nextPage = tablePagination.current ?? 1;
-    const nextPageSize = tablePagination.pageSize ?? 10;
-    getList(nextPage, nextPageSize);
-  };
-
   return (
-    <div className={styles["column-gap"]}>
+    <div className="column-gap">
       <PageHeader title="管理员列表" des="系统管理员，运营维护系统">
         <Button
           type="primary"
@@ -199,36 +180,30 @@ const User = () => {
         </Button>
       </PageHeader>
 
-      <div className={styles["table-card"]}>
-        <Flex align="center" gap="middle">
-          <Popconfirm
-            title="提示"
-            description="确定要删除吗?"
-            onConfirm={() => handleDel()}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button color="danger" variant="solid" icon={<DeleteOutlined />}>
-              批量删除
-            </Button>
-          </Popconfirm>
-        </Flex>
-        <Divider />
-        <Table<UserItem>
-          rowSelection={rowSelection}
-          columns={columns}
-          dataSource={list}
-          rowKey="userId"
-          pagination={{
-            current: pagination.page,
-            pageSize: pagination.pageSize,
-            total: pagination.total,
-          }}
-          onChange={handleTableChange}
-        />
-      </div>
+      <TableCard<UserItem>
+        toolbar={
+          <Flex align="center" gap="middle">
+            <Popconfirm
+              title="提示"
+              description="确定要删除吗?"
+              onConfirm={() => handleDel()}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button color="danger" variant="solid" icon={<DeleteOutlined />}>
+                批量删除
+              </Button>
+            </Popconfirm>
+          </Flex>
+        }
+        rowSelection={rowSelection}
+        columns={columns}
+        dataSource={list}
+        rowKey="userId"
+        pagination={pagination}
+        onChange={handleTableChange}
+      />
 
-      {/* 用户表单 */}
       <UserForm ref={formRef} onSuccess={refreshData} />
       <AssignRolesForm ref={assignRolesRef} onSuccess={refreshData} />
     </div>

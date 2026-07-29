@@ -6,6 +6,10 @@ type StatusOption<T> = {
   color?: string;
 };
 
+export const defineStatusOptions = <T extends string | number | boolean>(
+  options: StatusOption<T>[],
+) => options;
+
 export function createStatusTagRenderer<T>(
   options: ReadonlyArray<StatusOption<T>>,
   fallback?: { label?: string; color?: string }

@@ -6,7 +6,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import useUserStore from '@/store/userStore';
 
 // 上传的地址
-const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'
+const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/admin'
 const action = baseURL + '/uploads/images'
 
 // Upload beforeUpload 参数类型，用于读取本地文件进行预览。
@@ -40,7 +40,9 @@ const UploadImages = ({ maxCount = 1, onUploadSuccess, initialUrls = [] }: Uploa
   // 把已经上传的图片转成 Upload 组件可识别的 fileList
   useEffect(() => {
     if (!initialUrls?.length) {
-      setFileList([]);
+      if (fileList.length === 0) {
+        setFileList([]);
+      }
       return;
     }
 

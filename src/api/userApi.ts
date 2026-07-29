@@ -4,7 +4,7 @@ import type { ApiResponse, ListResponse, LoginParams, UserItem, UserListParams }
 export const userApi = {
   // 登录
   login: (params: LoginParams) => {
-    return request.post<ApiResponse>('/auth/admin/login', params);
+    return request.post<ApiResponse>('/auth/login', params);
   },
 
   // 获取用户列表

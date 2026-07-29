@@ -156,3 +156,27 @@ export interface EntriesItem {
   sort: number
   isEnabled: boolean
 }
+
+// 促销、广告
+type LayoutType = "single" | "double" | "triple"
+
+export interface PromoListParams extends BaseListParams {
+  title?: string
+  layoutType?: LayoutType
+  isEnabled?: boolean
+}
+
+export interface PromoImageItem {
+  title: string
+  imageUrl: string
+  linkUrl: string
+}
+
+export interface PromoItem {
+  id: number
+  title: string
+  layoutType: LayoutType
+  imageItems: PromoImageItem[]
+  sort: number
+  isEnabled: boolean
+}

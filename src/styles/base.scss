@@ -1,0 +1,30 @@
+// ==============================
+// 全局基础样式
+// ==============================
+@use 'variables' as *;
+
+.column-gap {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1 * 8;
+}
+
+// 卡片
+.app-card {
+  padding: $space-6;
+  border-radius: $radius-4;
+  background-color: #fff;
+}
+
+// 表格卡片
+.table-card {
+  padding: $space-6;
+  border-radius: $radius-4;
+  background-color: #fff;
+}
+
+body {
+  font-size: 16px;
+  color: $color-text;
+  background-color: $color-bg;
+}

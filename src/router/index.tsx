@@ -16,6 +16,7 @@ import Logs from "@/pages/Logs";
 import NotFound from "@/pages/NotFound";
 import Forbidden from "@/pages/Forbidden";
 import Entries from "@/pages/Entries";
+import Promo from "@/pages/Promo";
 
 const router = createBrowserRouter([
   {
@@ -67,14 +68,18 @@ const router = createBrowserRouter([
         element: <Logs />,
       },
       {
-        path: "/logs",
-        element: <Logs />,
-      },
-      {
         path: "/entries",
         element: <Entries />,
-      }
+      },
+      {
+        path: "/promo",
+        element: <Promo />,
+      },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
   {
     path: "/403",

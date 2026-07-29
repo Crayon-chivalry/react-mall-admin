@@ -1,0 +1,21 @@
+// ==============================
+// 混入
+// ==============================
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin text-hidden($ilnes: 1) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $ilnes;
+  overflow: hidden;
+}
