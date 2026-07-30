@@ -146,7 +146,7 @@ const Slider = () => {
               </Flex>
               <Row className={styles["banner-row"]}>
                 <Col span={12} className={styles["banner-col"]}>
-                  <div className={styles["banner-label"]}>排序权重</div>
+                  <div className={styles["banner-label"]}>排序</div>
                   <div>{item.sort}</div>
                 </Col>
                 <Col span={12} className={styles["banner-col"]}>

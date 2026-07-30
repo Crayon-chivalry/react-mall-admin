@@ -20,14 +20,6 @@ import useTablePagination from "@/components/TableCard/useTablePagination";
 import useTableSelection from "@/components/TableCard/useTableSelection";
 import { userApi } from "@/api/userApi";
 import { type Pagination, type UserItem } from "@/api/types";
-import { defineStatusOptions, createStatusTagRenderer } from "@/utils/status";
-
-// 状态列表配置
-const statusList = defineStatusOptions<UserItem["status"]>([
-  { label: "正常", value: 1, color: "processing" },
-  { label: "冻结", value: 2, color: "warning" },
-])
-const renderStatusTag = createStatusTagRenderer(statusList);
 
 const User = () => {
   // 配置项
@@ -66,7 +58,11 @@ const User = () => {
       title: "状态",
       dataIndex: "status",
       key: "status",
-      render: (_, { status }) => renderStatusTag(status),
+      render: (_, { status }) => (
+        <Tag color={status ? "green" : "red"}>
+          {status ? "正常" : "冻结"}
+        </Tag>
+      ),
     },
     {
       title: "操作",
@@ -145,11 +141,6 @@ const User = () => {
     setPagination(res.data.pagination);
   };
 
-  // 添加 / 修改成功 重新获取数据
-  const refreshData = () => {
-    getList();
-  };
-
   // 删除
   const handleDel = async (id?: string) => {
     const { data: res } = await userApi.deletes(
@@ -204,8 +195,8 @@ const User = () => {
         onChange={handleTableChange}
       />
 
-      <UserForm ref={formRef} onSuccess={refreshData} />
-      <AssignRolesForm ref={assignRolesRef} onSuccess={refreshData} />
+      <UserForm ref={formRef} onSuccess={() => getList()} />
+      <AssignRolesForm ref={assignRolesRef} onSuccess={() => getList()} />
     </div>
   );
 };

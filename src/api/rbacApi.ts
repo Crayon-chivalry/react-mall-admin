@@ -18,8 +18,8 @@ export const rbacApi = {
   },
 
   // 删除角色
-  deleteRole: (id: number) => {
-    return request.delete(`/rbac/roles/${id}`)
+  deleteRole: (ids: number[]) => {
+    return request.delete(`/rbac/roles`, { data: { ids } })
   },
 
   // 设置角色菜单

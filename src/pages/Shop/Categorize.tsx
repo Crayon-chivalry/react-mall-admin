@@ -2,12 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import {
   Button,
   Image,
-  Table,
   Flex,
+  Tag,
   App,
   type TableProps,
   Popconfirm,
-  type TablePaginationConfig,
 } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
@@ -20,14 +19,14 @@ import {
 import CategorizeForm, {
   type CategorizeRef,
 } from "./components/CategorizeForm";
+import TableCard from "@/components/TableCard";
+import useTablePagination from "@/components/TableCard/useTablePagination";
 import type {
   CategoriesItem,
   Pagination,
   CategoriesListParams,
 } from "@/api/types";
 import { categoriesApi } from "@/api/categoriesApi";
-import styles from "./index.module.scss";
-import { createStatusTagRenderer } from "@/utils/status";
 
 // 筛选配置
 const filterList: FilterItem[] = [
@@ -36,16 +35,8 @@ const filterList: FilterItem[] = [
     name: "keyword",
     placeholder: "请输入关键词",
     type: "input",
-  }
+  },
 ];
-
-// 状态列表
-const statusList = [
-  { label: "已启用", value: true, color: "processing" },
-  { label: "已禁用", value: false, color: "warning" },
-];
-
-const renderStatusTag = createStatusTagRenderer<CategoriesItem["isVisible"]>(statusList);
 
 const Categorize = () => {
   // 表单项
@@ -68,18 +59,39 @@ const Categorize = () => {
       title: "状态",
       dataIndex: "status",
       key: "status",
-      render: (_, { isVisible }) => renderStatusTag(isVisible),
+      render: (_, { isVisible }) => (
+        <Tag color={isVisible ? "green" : "red"}>
+          {isVisible ? "启用" : "禁用"}
+        </Tag>
+      ),
+    },
+    {
+      title: "排序",
+      dataIndex: "sort",
+      key: "sort",
     },
     {
       title: "操作",
       dataIndex: "operate",
       key: "operate",
       render: (_, item) => (
-        <Flex gap="large" className={styles["table-operate"]}>
-          {item.parentId === 0 && (
-            <PlusOutlined onClick={() => handleShowForm(undefined, item.id)} />
-          )}
-          <EditOutlined onClick={() => handleShowForm(item)} />
+        <Flex gap="small">
+          <Button
+            color="primary"
+            variant="text"
+            size="small"
+            onClick={() => handleShowForm(undefined, item.id)}
+          >
+            新增
+          </Button>
+          <Button
+            color="primary"
+            variant="text"
+            size="small"
+            onClick={() => handleShowForm(item)}
+          >
+            编辑
+          </Button>
           <Popconfirm
             title="提示"
             description="确定要删除吗?"
@@ -87,7 +99,9 @@ const Categorize = () => {
             okText="Yes"
             cancelText="No"
           >
-            <DeleteOutlined style={{ color: "#BA1A1A" }} />
+            <Button color="danger" variant="text" size="small">
+              删除
+            </Button>
           </Popconfirm>
         </Flex>
       ),
@@ -111,19 +125,11 @@ const Categorize = () => {
     formRef.current?.showDrawer(item, parentId);
   };
 
-  // 分页变化时触发
-  const handleTableChange = (tablePagination: TablePaginationConfig) => {
-    const nextPage = tablePagination.current ?? 1;
-    const nextPageSize = tablePagination.pageSize ?? 10;
-    getList(nextPage, nextPageSize);
-  };
-
   // 筛选
   const onSearch = (values: FormValues) => {
     const params: Partial<CategoriesListParams> = {
-      ...(values.keyword ? { keyword: String(values.keyword) } : {})
+      ...(values.keyword ? { keyword: String(values.keyword) } : {}),
     };
-
     setSearchParams(params);
     getList(1, pagination.pageSize, params);
   };
@@ -154,17 +160,15 @@ const Categorize = () => {
     getList();
   };
 
-  // 添加成功 / 编辑成功
-  const onSuccess = () => {
-    getList();
-  };
+  // 分页变化获取数据
+  const { handleTableChange } = useTablePagination(getList);
 
   useEffect(() => {
     getList();
   }, []);
 
   return (
-    <div className={styles["column-gap"]}>
+    <div className="column-gap">
       <PageHeader title="分类管理" des="构建多级分类体系，精准导引用户购物路径">
         <Button
           type="primary"
@@ -172,28 +176,22 @@ const Categorize = () => {
           icon={<PlusOutlined />}
           onClick={() => handleShowForm()}
         >
-          添加分类
+          新增分类
         </Button>
       </PageHeader>
 
       <TableFiltering filterList={filterList} onSubmit={onSearch} />
 
-      <div className={styles["table-card"]}>
-        <Table<CategoriesItem>
-          columns={columns}
-          dataSource={list}
-          rowKey="id"
-          pagination={{
-            current: pagination.page,
-            pageSize: pagination.pageSize,
-            total: pagination.total,
-          }}
-          onChange={handleTableChange}
-        />
-      </div>
+      <TableCard<CategoriesItem>
+        columns={columns}
+        dataSource={list}
+        rowKey="id"
+        pagination={pagination}
+        onChange={handleTableChange}
+      />
 
       {/* 分类表单 */}
-      <CategorizeForm ref={formRef} onSuccess={onSuccess} />
+      <CategorizeForm ref={formRef} onSuccess={() => getList()} />
     </div>
   );
 };

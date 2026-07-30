@@ -8,6 +8,7 @@ import {
   Radio,
   Flex,
   Space,
+  InputNumber,
   App,
   type RadioChangeEvent,
 } from "antd";
@@ -53,7 +54,7 @@ const PromoForm = forwardRef<PromoFormRef, PromoFormProps>((props, ref) => {
       form.setFieldsValue({ ...item });
     } else {
       form.resetFields();
-      form.setFieldsValue({ isEnabled: true, layoutType: "single" });
+      form.setFieldsValue({ sort: 1, isEnabled: true, layoutType: "single" });
     }
     setOpen(true);
   };
@@ -162,6 +163,9 @@ const PromoForm = forwardRef<PromoFormRef, PromoFormProps>((props, ref) => {
             </Flex>
           </Form.Item>
         )}
+        <Form.Item<PromoItem> label="排序权重" name="sort">
+          <InputNumber min={1} style={{ width: "100%" }} />
+        </Form.Item>
         <Form.Item<PromoItem>
           label="启用"
           name="isEnabled"

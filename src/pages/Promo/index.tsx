@@ -48,6 +48,11 @@ const Promo = () => {
       ),
     },
     {
+      title: "排序",
+      dataIndex: "sort",
+      key: "sort",
+    },
+    {
       title: "操作",
       dataIndex: "operate",
       key: "operate",
@@ -160,7 +165,7 @@ const Promo = () => {
         onChange={handleTableChange}
       />
 
-      <PromoForm ref={formRef} onSuccess={() => getList} />
+      <PromoForm ref={formRef} onSuccess={() => getList()} />
     </div>
   );
 };

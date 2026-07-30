@@ -9,23 +9,26 @@ import {
 } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 
-import TableCard from "@/components/TableCard";
-import useTablePagination from "@/components/TableCard/useTablePagination";
-import useTableSelection from "@/components/TableCard/useTableSelection";
-import PageHeader from "@/components/PageHeader";
-import EntriesForm, { type EntriesFormRef } from "./components/EntriesForm";
-import TableFiltering from "@/components/TableFiltering";
+import { contentApi } from "@/api/contentApi";
+import { defineStatusOptions, createStatusTagRenderer } from "@/utils/status";
 import {
   type Pagination,
   type EntriesItem,
   type EntriesListParams,
 } from "@/api/types";
+import PageHeader from "@/components/PageHeader";
+// 筛选相关
+import TableFiltering from "@/components/TableFiltering";
 import {
   type FilterItem,
   type FormValues,
 } from "@/components/TableFiltering/filterTypes";
-import { contentApi } from "@/api/contentApi";
-import { createStatusTagRenderer } from "@/utils/status";
+// 表格相关
+import TableCard from "@/components/TableCard";
+import useTablePagination from "@/components/TableCard/useTablePagination";
+import useTableSelection from "@/components/TableCard/useTableSelection";
+// 表单
+import EntriesForm, { type EntriesFormRef } from "./components/EntriesForm";
 
 // 筛选配置
 const filterList: FilterItem[] = [
@@ -50,17 +53,11 @@ const filterList: FilterItem[] = [
 ];
 
 // 状态列表
-const statusList: Array<{
-  label: string;
-  value: EntriesItem["isEnabled"];
-  color: string;
-}> = [
+const statusList = defineStatusOptions<EntriesItem["isEnabled"]>([
   { label: "已启用", value: true, color: "green" },
-  { label: "已禁用", value: false, color: "warning" },
-];
-
-const renderStatusTag =
-  createStatusTagRenderer<EntriesItem["isEnabled"]>(statusList);
+  { label: "已禁用", value: false, color: "red" },
+])
+const renderStatusTag = createStatusTagRenderer(statusList);
 
 const Entries = () => {
   // 表单项
@@ -88,6 +85,11 @@ const Entries = () => {
       render: (_, { isEnabled }) => renderStatusTag(isEnabled),
     },
     {
+      title: "排序",
+      dataIndex: "sort",
+      key: "sort",
+    },
+    {
       title: "操作",
       dataIndex: "operate",
       key: "operate",
@@ -104,7 +106,7 @@ const Entries = () => {
           <Popconfirm
             title="提示"
             description="确定要删除吗?"
-            onConfirm={() => handleDelete(item.id)}
+            onConfirm={() => handleDel(item.id)}
             okText="Yes"
             cancelText="No"
           >
@@ -220,7 +222,7 @@ const Entries = () => {
       />
 
       {/* 表单 */}
-      <EntriesForm ref={formRef} onSuccess={() => getList} />
+      <EntriesForm ref={formRef} onSuccess={() => getList()} />
     </div>
   );
 };

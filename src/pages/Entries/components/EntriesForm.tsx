@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
-import { Drawer, Form, Input, Button, Switch, App } from "antd";
+import { Drawer, Form, Input, Button, Switch, InputNumber, App } from "antd";
 
 import UploadImages from "@/components/UploadImages";
 import type { EntriesItem } from "@/api/types";
@@ -35,7 +35,7 @@ const EntriesForm = forwardRef<EntriesFormRef, EntriesFormProps>(
         form.setFieldsValue({ ...item });
       } else {
         form.resetFields();
-        form.setFieldsValue({ isEnabled: true });
+        form.setFieldsValue({ sort: 1, isEnabled: true });
       }
       setOpen(true);
     };
@@ -48,7 +48,6 @@ const EntriesForm = forwardRef<EntriesFormRef, EntriesFormProps>(
 
     // 提交
     const onFinish = async (values: EntriesItem) => {
-      console.log(editingItem?.id)
       const { data: res } = editingItem
         ? await contentApi.entriesUpdate(editingItem.id, values)
         : await contentApi.entriesAdd(values);
@@ -89,6 +88,9 @@ const EntriesForm = forwardRef<EntriesFormRef, EntriesFormProps>(
             rules={rules.linkUrl}
           >
             <Input size="large" placeholder="请输入跳转链接" />
+          </Form.Item>
+          <Form.Item<EntriesItem> label="排序权重" name="sort">
+            <InputNumber min={1} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<EntriesItem>
             label="启用"

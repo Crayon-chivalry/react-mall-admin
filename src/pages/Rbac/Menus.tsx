@@ -1,23 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, App, Table, Flex, Popconfirm, type TableProps } from 'antd';
+import { Button, App, Flex, Popconfirm, type TableProps } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
+import { rbacApi } from '@/api/rbacApi';
+import type { MenuItem } from "@/api/types";
+import { createStatusTagRenderer, defineStatusOptions } from "@/utils/status";
 import PageHeader from '@/components/PageHeader'
 import MenuIcon from '@/components/MenuIcon';
 import MenusForm, { type MenusFormRef } from './components/MenusForm'
-import styles from './index.module.scss'
-import { rbacApi } from '@/api/rbacApi';
-import type { MenuItem } from "@/api/types";
-import { createStatusTagRenderer } from "@/utils/status";
+import TableCard from "@/components/TableCard";
 
-// 类型列表
-const statusList = [
+// 类型列表配置
+const statusList = defineStatusOptions<MenuItem["type"]>([
   { label: "目录", value: 1, color: "green" },
   { label: "菜单", value: 2, color: "processing" },
   { label: "操作项", value: 3, color: "warning" }
-];
-
-const renderStatusTag = createStatusTagRenderer<MenuItem["type"]>(statusList);
+])
+const renderStatusTag = createStatusTagRenderer(statusList);
 
 const Menus = () => {
   // 表单项
@@ -46,11 +45,16 @@ const Menus = () => {
       render: (_, { type }) => renderStatusTag(type),
     },
     {
+      title: "排序",
+      dataIndex: "sort",
+      key: "sort",
+    },
+    {
       title: "操作",
       dataIndex: "operate",
       key: "operate",
       render: (_, item) => (
-        <Flex gap="large" className={styles["table-operate"]}>
+        <Flex gap="large">
           {item.type !== 3 && (
             <PlusOutlined onClick={() => handleAddChild(item)} />
           )}
@@ -86,11 +90,6 @@ const Menus = () => {
     });
   };
 
-  // 提交成功刷新数据
-  const onSuccess = () => {
-    getMenus()
-  }
-
   // 获取菜单树
   const getMenus = async () => {
     const { data: res } = await rbacApi.menus()
@@ -109,7 +108,7 @@ const Menus = () => {
   }, [])
 
   return (
-    <div className={styles["column-gap"]}>
+    <div className="column-gap">
       <PageHeader title='菜单管理' des='管理角色菜单权限，合理分配职务'>
         <Button
           type="primary"
@@ -121,16 +120,14 @@ const Menus = () => {
         </Button>
       </PageHeader>
 
-      <div className={styles["table-card"]}>
-        <Table<MenuItem>
-          columns={columns}
-          dataSource={menusList}
-          rowKey="id"
-        />
-      </div>
+      <TableCard<MenuItem>
+        columns={columns}
+        dataSource={menusList}
+        rowKey="id"
+      />
 
       {/* 菜单表单 */}
-      <MenusForm ref={formRef} menusList={menusList} onSuccess={onSuccess} />
+      <MenusForm ref={formRef} menusList={menusList} onSuccess={() => getMenus()} />
     </div>
   )
 }
