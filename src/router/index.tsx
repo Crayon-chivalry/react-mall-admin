@@ -9,6 +9,7 @@ import AdminList from "@/pages/User/AdminList";
 import Roles from "@/pages/Rbac/index";
 import Menus from "@/pages/Rbac/Menus";
 import Shop from "@/pages/Shop";
+import GoodsForm from "@/pages/Shop/GoodsForm";
 import Categorize from "@/pages/Shop/Categorize";
 import Setting from "@/pages/Setting";
 import Slider from "@/pages/Slider";
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: "/shop",
         element: <Shop />,
+      },
+      {
+        path: "/goods-form",
+        element: <GoodsForm />,
       },
       {
         path: "/setting",

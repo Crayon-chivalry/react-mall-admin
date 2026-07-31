@@ -180,3 +180,32 @@ export interface PromoItem {
   sort: number
   isEnabled: boolean
 }
+
+// 商品相关
+export interface SpecsItem {
+  name: string
+  value: string
+}
+
+export interface SkuItem {
+  title: string
+  specs: SpecsItem[]
+  price: string
+  stock: number
+  cover: string
+  isDefault: boolean
+}
+
+export interface GoodsItem {
+  id: number
+  name: string
+  price: string
+  stock: number
+  categoryId: number
+  cover: string
+  images: string[]
+  description: string
+  detailContent: string
+  isOnSale: boolean
+  skus: SkuItem[]
+}

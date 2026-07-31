@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Button, Table, type TableProps } from "antd";
 import { PlusOutlined, RiseOutlined } from "@ant-design/icons";
 
@@ -127,6 +128,8 @@ const dataList = [
 ];
 
 const Shop = () => {
+  const navigate = useNavigate()
+
   const onSearch = (values: FormValues) => {
     console.log(values)
   }
@@ -135,7 +138,7 @@ const Shop = () => {
     <div className={styles["column-gap"]}>
       {/* 顶部标题栏 */}
       <PageHeader title="商品管理" des="管理您的产品库存、定价及销售表现。">
-        <Button type="primary" size="large" icon={<PlusOutlined />}>
+        <Button type="primary" size="large" icon={<PlusOutlined />} onClick={() => navigate("/goods-form")}>
           新增商品
         </Button>
       </PageHeader>

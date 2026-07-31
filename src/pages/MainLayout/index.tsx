@@ -15,7 +15,7 @@ const { Content } = Layout;
 
 const collectAllowedPaths = (menus: MenuItem[] = []): string[] => {
   return menus.flatMap((item) => {
-    const currentPath = item.type === 2 && item.path ? [item.path] : [];
+    const currentPath = item.type >= 2 && item.path ? [item.path] : [];
     return [...currentPath, ...collectAllowedPaths(item.children)];
   });
 };

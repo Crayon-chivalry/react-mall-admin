@@ -138,7 +138,7 @@ const MenusForm = forwardRef<MenusFormRef, MenusFormProps>((props, ref) => {
           </Form.Item>
         )}
         {/* 类型菜单需要设置路由和组件 */}
-        {currentType == 2 && (
+        {/* {currentType == 2 && ( */}
           <>
             <Form.Item<MenuItem>
               label="路由路径"
@@ -155,7 +155,7 @@ const MenusForm = forwardRef<MenusFormRef, MenusFormProps>((props, ref) => {
               <Input size="large" placeholder="请输入组件路径" />
             </Form.Item>
           </>
-        )}
+        {/* )} */}
         {/* 类型操作项需要设置权限编码 */}
         {currentType === 3 && (
           <Form.Item<MenuItem>

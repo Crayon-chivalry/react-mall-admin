@@ -7,9 +7,9 @@ export const categoriesApi = {
     return request.get<ApiResponse>("/categories", {params})
   },
 
-  // 获取全部一级分类
-  parentList: () => {
-    return request.get<ApiResponse>("/categories/parent/list",)
+  // 获取快捷分类
+  parentList: (level?: number) => {
+    return request.get<ApiResponse>("/categories/parent/list", {params: {level}})
   },
 
   // 添加
