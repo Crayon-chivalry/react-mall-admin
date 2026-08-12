@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   Button,
@@ -8,17 +9,18 @@ import {
   Flex,
   Switch,
   InputNumber,
-  App
+  App,
 } from "antd";
-import { PlusOutlined, RiseOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 
 import styles from "./index.module.scss";
-import type { GoodsItem, CategoriesItem } from "@/api/types";
+import type { GoodsItem, CategoriesItem, SkuItem, SpecsItem } from "@/api/types";
 import { categoriesApi } from "@/api/categoriesApi";
 import { goodsApi } from "@/api/goodsApi";
 import PageHeader from "@/components/PageHeader";
 import UploadImages from "@/components/UploadImages";
 import RichEditor from "@/components/RichEditor";
+import SkuForm from "./components/SkuForm";
 
 const rules = {
   name: [{ required: true, message: "请输入商品名称" }],
@@ -28,56 +30,79 @@ const rules = {
   stock: [{ required: true, message: "请输入商品库存" }],
 };
 
+const EMPTY_SKU: SkuItem = {
+  title: "",
+  specs: [{ name: "", value: "" }],
+  price: "",
+  stock: 0,
+  cover: "",
+  isDefault: false,
+};
+
+// 只保留后端需要的字段，过滤 id/sort/createdAt 等
+const cleanSku = ({ title, specs, price, stock, cover, isDefault }: SkuItem) => ({
+  title, specs, price, stock, cover, isDefault,
+});
+
 const GoodsForm = () => {
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get('id');
   const { message } = App.useApp();
   const [form] = Form.useForm();
   const [categoriesList, setCategoriesList] = useState<CategoriesItem[]>([]);
   const [editingItem, setEditingItem] = useState<GoodsItem | null>(null);
+  const specType = Form.useWatch("specType", form) ?? "single";
+  const [skus, setSkus] = useState<SkuItem[]>([{ ...EMPTY_SKU, isDefault: true }]);
 
-  // 获取二级分类
   const getCategoriesList = async () => {
     const { data: res } = await categoriesApi.parentList(2);
     setCategoriesList(res.data);
   };
 
+  const getGoodsDetail = async () => {
+    const { data: res } = await goodsApi.get(id as unknown as number);
+    setEditingItem(res.data);
+    form.setFieldsValue({...res.data, categoryId: res.data.category.id});
+    if (res.data.specType === "multi" && res.data.skus?.length) {
+      setSkus(res.data.skus.map(cleanSku));
+    }
+  };
+
   const onFinish = async (values: GoodsItem) => {
-    console.log(values);
+    const payload = {
+      ...values,
+      ...(specType === "multi" ? { skus: skus.map(cleanSku) } : {}),
+    };
     const { data: res } = editingItem
-      ? await goodsApi.update(editingItem.id, values)
-      : await goodsApi.add(values);
+      ? await goodsApi.update(editingItem.id, payload)
+      : await goodsApi.add(payload);
     message.success(res.message);
   };
 
   useEffect(() => {
     getCategoriesList();
+    if(id) getGoodsDetail();
+    else form.setFieldValue("specType", "single");
   }, []);
 
   return (
     <div className="column-gap">
-      {/* 顶部标题栏 */}
       <PageHeader title="新增商品">
         <Button type="primary" size="large" icon={<PlusOutlined />}>
           保存商品
         </Button>
       </PageHeader>
       <Form form={form} layout="vertical" onFinish={onFinish}>
+        <Form.Item<GoodsItem> name="specType" hidden><Input /></Form.Item>
         <div className="column-gap">
           {/* 基本信息 */}
           <div className="app-card">
             <div className={styles["card-title"]}>基本信息</div>
             <Divider />
-            <Form.Item<GoodsItem>
-              label="商品名称"
-              name="name"
-              rules={rules.name}
-            >
+            <Form.Item<GoodsItem> label="商品名称" name="name" rules={rules.name}>
               <Input size="large" placeholder="请输入名称" />
             </Form.Item>
-            <Form.Item<GoodsItem>
-              label="商品类目"
-              name="categoryId"
-              rules={rules.categoryId}
-            >
+            <Form.Item<GoodsItem> label="商品类目" name="categoryId" rules={rules.categoryId}>
               <Select
                 options={categoriesList}
                 fieldNames={{ label: "name", value: "id" }}
@@ -90,68 +115,55 @@ const GoodsForm = () => {
             </Form.Item>
           </div>
 
-          {/* 销售信息 / 规格 */}
+          {/* 销售信息 */}
           <div className="app-card">
             <Flex justify="space-between">
               <div className={styles["card-title"]}>销售信息</div>
-              <Flex gap="small">
-                <Switch defaultChecked />
+              <Flex gap="small" align="center">
+                <Switch
+                  checked={specType === "multi"}
+                  onChange={(checked) => {
+                    form.setFieldValue("specType", checked ? "multi" : "single");
+                    if (checked && !editingItem?.skus?.length) {
+                      setSkus([{ ...EMPTY_SKU, isDefault: true }]);
+                    }
+                  }}
+                />
                 <div>启用多规格</div>
               </Flex>
             </Flex>
             <Divider />
-            <Flex wrap gap="middle">
-              <Form.Item<GoodsItem>
-                label="商品价格"
-                name="price"
-                rules={rules.price}
-              >
-                <InputNumber
-                  stringMode
-                  placeholder="请输入商品价格"
-                  className={styles["input-number"]}
-                />
-              </Form.Item>
-              <Form.Item<GoodsItem>
-                label="商品库存"
-                name="stock"
-                rules={rules.stock}
-              >
-                <InputNumber
-                  stringMode
-                  placeholder="请输入商品价格"
-                  className={styles["input-number"]}
-                />
-              </Form.Item>
-            </Flex>
+
+            {specType === "single" ? (
+              <Flex wrap gap="middle">
+                <Form.Item<GoodsItem> label="商品价格" name="price" rules={rules.price}>
+                  <InputNumber stringMode placeholder="请输入商品价格" className={styles["input-number"]} />
+                </Form.Item>
+                <Form.Item<GoodsItem> label="商品库存" name="stock" rules={rules.stock}>
+                  <InputNumber stringMode placeholder="请输入商品库存" className={styles["input-number"]} />
+                </Form.Item>
+              </Flex>
+            ) : (
+              <SkuForm value={skus} onChange={setSkus} />
+            )}
           </div>
 
           {/* 图文信息 */}
           <div className="app-card">
             <div className={styles["card-title"]}>图文信息</div>
             <Divider />
-            <Form.Item<GoodsItem>
-              label="商品主图"
-              name="images"
-              rules={rules.images}
-            >
+            <Form.Item<GoodsItem> label="商品主图" name="images" rules={rules.images}>
               <UploadImages
-                initialUrls={editingItem?.images ? editingItem.images : []}
-                onUploadSuccess={(urls) => {
-                  form.setFieldsValue({ images: urls });
-                }}
+                initialUrls={editingItem?.images ?? []}
+                onUploadSuccess={(urls) => form.setFieldsValue({ images: urls })}
               />
             </Form.Item>
             <Form.Item<GoodsItem> label="商品封面图">
               <UploadImages
                 initialUrls={editingItem?.cover ? [editingItem.cover] : []}
-                onUploadSuccess={(urls) => {
-                  form.setFieldsValue({ cover: urls[0] });
-                }}
+                onUploadSuccess={(urls) => form.setFieldsValue({ cover: urls[0] })}
               />
-              <div className={styles["prompt"]}>
-                可不传，封面图默认为商品主图第一张
-              </div>
+              <div className={styles["prompt"]}>可不传，封面图默认为商品主图第一张</div>
             </Form.Item>
             <Form.Item<GoodsItem> name="detailContent" label="商品详情">
               <RichEditor />

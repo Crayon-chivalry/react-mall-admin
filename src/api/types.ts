@@ -182,6 +182,12 @@ export interface PromoItem {
 }
 
 // 商品相关
+export interface GoodsListParams extends BaseListParams {
+  keyword?: string
+  categoryId?: number
+  isOnSale?: boolean
+}
+
 export interface SpecsItem {
   name: string
   value: string
@@ -208,4 +214,6 @@ export interface GoodsItem {
   detailContent: string
   isOnSale: boolean
   skus: SkuItem[]
+  category: CategoriesItem
+  specType: "single" | "multi"
 }
