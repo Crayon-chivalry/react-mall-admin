@@ -31,60 +31,97 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Dashboard />,
+        handle: { title: "仪表板" },
       },
+      // 用户管理
       {
         path: "/user",
-        element: <User />,
+        handle: { title: "用户管理" },
+        children: [
+          {
+            index: true,
+            element: <User />,
+            handle: { title: "用户列表" },
+          },
+          {
+            path: "admin",
+            element: <AdminList />,
+            handle: { title: "管理员列表" },
+          },
+        ],
       },
+      // 商城管理
       {
-        path: "/admin-list",
-        element: <AdminList />,
+        path: "/shop",
+        handle: { title: "商城管理" },
+        children: [
+          {
+            path: "list",
+            element: <Shop />,
+            handle: { title: "商品列表" },
+          },
+          {
+            path: "goods-form",
+            element: <GoodsForm />,
+            handle: { title: "编辑商品" },
+          },
+          {
+            path: "categorize",
+            element: <Categorize />,
+            handle: { title: "分类管理" },
+          },
+        ],
+      },
+      // 内容管理
+      {
+        handle: { title: "内容管理" },
+        path: "/content",
+        children: [
+          {
+            path: "slider",
+            element: <Slider />,
+            handle: { title: "轮播图" },
+          },
+          {
+            path: "entries",
+            element: <Entries />,
+            handle: { title: "金刚区入口" },
+          },
+          {
+            path: "promo",
+            element: <Promo />,
+            handle: { title: "首页广告位" },
+          },
+        ],
       },
       {
         path: "/roles",
         element: <Roles />,
+        handle: { title: "角色管理" },
       },
       {
         path: "/menus",
         element: <Menus />,
+        handle: { title: "菜单管理" },
       },
-      {
-        path: "/shop",
-        element: <Shop />,
-      },
-      {
-        path: "/goods-form",
-        element: <GoodsForm />,
-      },
+
       {
         path: "/setting",
         element: <Setting />,
+        handle: { title: "系统设置" },
       },
-      {
-        path: "/slider",
-        element: <Slider />,
-      },
-      {
-        path: "/categorize",
-        element: <Categorize />,
-      },
+
       {
         path: "/logs",
         element: <Logs />,
-      },
-      {
-        path: "/entries",
-        element: <Entries />,
-      },
-      {
-        path: "/promo",
-        element: <Promo />,
+        handle: { title: "操作日志" },
       },
     ],
   },
   {
     path: "/login",
     element: <Login />,
+    handle: { title: "登录" },
   },
   {
     path: "/403",

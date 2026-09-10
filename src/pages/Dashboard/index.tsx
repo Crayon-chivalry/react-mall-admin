@@ -1,39 +1,56 @@
+import { useEffect, useState } from "react";
 import { Col, Row } from "antd";
 
+import { statsApi } from "@/api/statsApi";
 import styles from "./index.module.scss";
 
 import SalesCharts from "./components/SalesCharts";
 import RecentOrders from "./components/RecentOrders";
 import HotGoods from "./components/HotGoods";
 
-const totalList = [
-  {
-    id: 1,
-    name: "总销售额",
-    value: 1284590,
-    icon: "/src/assets/images/sales.png",
-  },
-  {
-    id: 2,
-    name: "订单总量",
-    value: 8432,
-    icon: "/src/assets/images/order-num.png",
-  },
-  {
-    id: 3,
-    name: "新增用户",
-    value: 1204,
-    icon: "/src/assets/images/user-num.png",
-  },
-  {
-    id: 4,
-    name: "转化率",
-    value: 3.4,
-    icon: "/src/assets/images/conver-rate.png",
-  },
-];
-
 const Dashboard = () => {
+  const [totalList, setTotalList] = useState([
+    {
+      id: 1,
+      name: "总销售额",
+      value: 0,
+      icon: "/src/assets/images/sales.png",
+    },
+    {
+      id: 2,
+      name: "订单总量",
+      value: 0,
+      icon: "/src/assets/images/order-num.png",
+    },
+    {
+      id: 3,
+      name: "新增用户",
+      value: 0,
+      icon: "/src/assets/images/user-num.png",
+    },
+    {
+      id: 4,
+      name: "转化率",
+      value: 3.4,
+      icon: "/src/assets/images/conver-rate.png",
+    },
+  ]);
+
+  // 获取总销量、订单总量、用户总量
+  const getSummary = async () => {
+    const { data: res } = await statsApi.summary();
+    setTotalList([
+      {...totalList[0], value: res.data.totalSales},
+      {...totalList[1], value: res.data.totalOrders},
+      {...totalList[2], value: res.data.totalUsers},
+      {...totalList[3]}
+    ])
+  };
+
+  useEffect(() => {
+    getSummary();
+  }, []);
+
   return (
     <Row gutter={[0, 32]}>
       {/* 汇总数据 */}

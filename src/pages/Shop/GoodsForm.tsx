@@ -154,6 +154,7 @@ const GoodsForm = () => {
             <Divider />
             <Form.Item<GoodsItem> label="商品主图" name="images" rules={rules.images}>
               <UploadImages
+                maxCount={9}
                 initialUrls={editingItem?.images ?? []}
                 onUploadSuccess={(urls) => form.setFieldsValue({ images: urls })}
               />

@@ -12,8 +12,8 @@ import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 
 import AssignRolesForm, {
   type AssignRolesRef,
-} from "./components/AssignRolesForm";
-import UserForm, { type UserFormRef } from "./components/UserForm";
+} from "../components/AssignRolesForm";
+import UserForm, { type UserFormRef } from "../components/UserForm";
 import PageHeader from "@/components/PageHeader";
 import TableCard from "@/components/TableCard";
 import useTablePagination from "@/components/TableCard/useTablePagination";

@@ -1,16 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
 import * as echarts from "echarts";
-import cn from 'classnames'
+import cn from "classnames";
 
 import styles from "../index.module.scss";
+import { statsApi } from "@/api/statsApi";
 
 // 销售日期范围
 const tabs = [
-  {
-    name: "日",
-    value: 1,
-  },
   {
     name: "周",
     value: 7,
@@ -22,14 +19,14 @@ const tabs = [
 ];
 
 const SalesCharts = () => {
-  const [tabsActiveVal, setTabsActiveVal] = useState(1);
+  const [days, setDays] = useState(7);
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
 
   // tabs 切换
   const tabsChange = (value: number) => {
-    setTabsActiveVal(value);
-    // 后续获取数据
+    setDays(value);
+    getSalesTrend(value)
   };
 
   // 创建 Echart
@@ -47,31 +44,18 @@ const SalesCharts = () => {
         top: "15%",
         left: "0%",
         right: "0%",
-        bottom: "0%"
+        bottom: "0%",
       },
       xAxis: {
         type: "category",
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        data: [],
       },
       yAxis: {
         type: "value",
       },
       series: [
         {
-          data: [
-            120,
-            {
-              value: 200,
-              itemStyle: {
-                color: "#505372",
-              },
-            },
-            150,
-            80,
-            70,
-            110,
-            130,
-          ],
+          data: [],
           type: "bar",
         },
       ],
@@ -82,7 +66,20 @@ const SalesCharts = () => {
     });
   };
 
+  // 获取销售图表数据
+  const getSalesTrend = async (value: number) => {
+    const { data: res } = await statsApi.salesTrend(value);
+    const list = res.data.list || [];
+    const xAxisData = list.map((item: any) => item.date);
+    const seriesData = list.map((item: any) => item.sales);
+    chartInstance.current?.setOption({
+      xAxis: { data: xAxisData },
+      series: [{ data: seriesData, type: "bar" }],
+    });
+  };
+
   useEffect(() => {
+    getSalesTrend(days);
     initChart();
 
     // Echart 响应式
@@ -106,13 +103,15 @@ const SalesCharts = () => {
         <div>
           <div className={styles["card-title"]}>销售图表</div>
           <div className={styles["sales-label"]}>
-            过去 {tabsActiveVal} 天的每日销售额变动
+            过去 {days} 天的每日销售额变动
           </div>
         </div>
         <div className={styles["tabs"]}>
           {tabs.map((item) => (
             <div
-              className={cn(styles.tab, {[styles.active]: tabsActiveVal === item.value})}
+              className={cn(styles.tab, {
+                [styles.active]: days === item.value,
+              })}
               key={item.value}
               onClick={() => tabsChange(item.value)}
             >

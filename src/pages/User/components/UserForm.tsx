@@ -20,8 +20,7 @@ const rules = {
   phone: [{ required: true, message: "请输入手机号" }],
   account: [{ required: true, message: "请输入账号" }],
   nickname: [{ required: true, message: "请输入姓名" }],
-  password: [{ required: true, message: "请输入登录密码" }],
-  payPassword: [{ required: true, message: "请输入支付密码" }],
+  password: [{ required: true, message: "请输入登录密码" }]
 };
 
 const UserForm = forwardRef<UserFormRef, UserFormProps>((props, ref) => {
@@ -114,15 +113,6 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>((props, ref) => {
         >
           <Input size="large" type="password" placeholder="请输入登录密码" />
         </Form.Item>
-        {role === "customer" && (
-          <Form.Item<UserItem>
-            label="支付密码"
-            name="payPassword"
-            rules={editingItem ? [] : rules.payPassword}
-          >
-            <Input size="large" type="password" placeholder="请输入支付密码" />
-          </Form.Item>
-        )}
         <Form.Item<UserItem>
           label="状态"
           name="status"

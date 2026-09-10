@@ -76,6 +76,11 @@ const Shop = () => {
       key: "stock",
     },
     {
+      title: "销量",
+      dataIndex: "sales",
+      key: "sales",
+    },
+    {
       title: "分类",
       dataIndex: "category",
       key: "category",
@@ -101,7 +106,7 @@ const Shop = () => {
             color="primary"
             variant="text"
             size="small"
-            onClick={() => navigate(`/goods-form?id=${item.id}`)}
+            onClick={() => navigate(`/shop/goods-form?id=${item.id}`)}
           >
             编辑
           </Button>
@@ -238,7 +243,7 @@ const Shop = () => {
           type="primary"
           size="large"
           icon={<PlusOutlined />}
-          onClick={() => navigate("/goods-form")}
+          onClick={() => navigate("/shop/products/form")}
         >
           新增商品
         </Button>
