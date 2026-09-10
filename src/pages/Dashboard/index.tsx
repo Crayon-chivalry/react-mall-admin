@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
-import { Col, Row } from "antd";
+import { Col, Row, Statistic, type StatisticProps } from "antd";
+import CountUp from "react-countup";
 
 import { statsApi } from "@/api/statsApi";
 import styles from "./index.module.scss";
 
+const CountUpComponent = (CountUp as any).default ?? CountUp;
+
 import SalesCharts from "./components/SalesCharts";
 import RecentOrders from "./components/RecentOrders";
 import HotGoods from "./components/HotGoods";
+
+const formatter: StatisticProps["formatter"] = (value) => (
+  <CountUpComponent end={value as number} separator="," />
+);
 
 const Dashboard = () => {
   const [totalList, setTotalList] = useState([
@@ -40,11 +47,11 @@ const Dashboard = () => {
   const getSummary = async () => {
     const { data: res } = await statsApi.summary();
     setTotalList([
-      {...totalList[0], value: res.data.totalSales},
-      {...totalList[1], value: res.data.totalOrders},
-      {...totalList[2], value: res.data.totalUsers},
-      {...totalList[3]}
-    ])
+      { ...totalList[0], value: res.data.totalSales },
+      { ...totalList[1], value: res.data.totalOrders },
+      { ...totalList[2], value: res.data.totalUsers },
+      { ...totalList[3] },
+    ]);
   };
 
   useEffect(() => {
@@ -63,7 +70,17 @@ const Dashboard = () => {
                   <div>{item.name}</div>
                   <img src={item.icon} className={styles["total-icon"]} />
                 </div>
-                <div className={styles["total-value"]}>{item.value}</div>
+                <div className={styles["total-value"]}>
+                  <Statistic
+                    value={item.value}
+                    formatter={formatter}
+                    styles={{
+                      content: {
+                        fontSize: 30,
+                      },
+                    }}
+                  />
+                </div>
               </div>
             </Col>
           ))}

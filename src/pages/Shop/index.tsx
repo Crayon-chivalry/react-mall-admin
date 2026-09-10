@@ -51,7 +51,7 @@ const dataList = [
   },
 ];
 
-const Shop = () => {
+const Products = () => {
   // 配置项
   const columns: TableProps<GoodsItem>["columns"] = [
     {
@@ -106,7 +106,7 @@ const Shop = () => {
             color="primary"
             variant="text"
             size="small"
-            onClick={() => navigate(`/shop/goods-form?id=${item.id}`)}
+            onClick={() => navigate(`/shop/products-form?id=${item.id}`)}
           >
             编辑
           </Button>
@@ -243,7 +243,7 @@ const Shop = () => {
           type="primary"
           size="large"
           icon={<PlusOutlined />}
-          onClick={() => navigate("/shop/products/form")}
+          onClick={() => navigate("/shop/products-form")}
         >
           新增商品
         </Button>
@@ -308,4 +308,4 @@ const Shop = () => {
   );
 };
 
-export default Shop;
+export default Products;

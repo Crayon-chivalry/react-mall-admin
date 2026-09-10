@@ -9,7 +9,7 @@ import AdminList from "@/pages/User/AdminList";
 import Roles from "@/pages/Rbac/index";
 import Menus from "@/pages/Rbac/Menus";
 import Shop from "@/pages/Shop";
-import GoodsForm from "@/pages/Shop/GoodsForm";
+import ProductsForm from "@/pages/Shop/ProductsForm";
 import Categorize from "@/pages/Shop/Categorize";
 import Setting from "@/pages/Setting";
 import Slider from "@/pages/Slider";
@@ -56,13 +56,13 @@ const router = createBrowserRouter([
         handle: { title: "商城管理" },
         children: [
           {
-            path: "list",
+            path: "products",
             element: <Shop />,
             handle: { title: "商品列表" },
           },
           {
-            path: "goods-form",
-            element: <GoodsForm />,
+            path: "products-form",
+            element: <ProductsForm />,
             handle: { title: "编辑商品" },
           },
           {

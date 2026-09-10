@@ -125,7 +125,7 @@ const PromoForm = forwardRef<PromoFormRef, PromoFormProps>((props, ref) => {
             onUploadSuccess={(urls) => {
               const prevItems = form.getFieldValue("imageItems") || [];
               form.setFieldsValue({
-                imageItems: urls.map((url, index) => {
+                imageItems: urls.map((url) => {
                   const existing = prevItems?.find(
                     (item: PromoImageItem) => item.imageUrl === url,
                   );

@@ -40,6 +40,15 @@ const SalesCharts = () => {
 
     chartInstance.current = echarts.init(chartRef.current);
     const option = {
+      backgroundColor: "transparent",
+      tooltip: {
+        trigger: "axis",
+        backgroundColor: "rgba(15, 23, 42, 0.85)",
+        borderColor: "transparent",
+        textStyle: {
+          color: "#f8fafc",
+        },
+      },
       grid: {
         top: "15%",
         left: "0%",
@@ -49,14 +58,49 @@ const SalesCharts = () => {
       xAxis: {
         type: "category",
         data: [],
+        axisLine: {
+          lineStyle: {
+            color: "#cbd5e1",
+          },
+        },
+        axisLabel: {
+          color: "#64748b",
+          margin: 12,
+        },
       },
       yAxis: {
         type: "value",
+        splitLine: {
+          lineStyle: {
+            type: "dashed",
+            color: "#e2e8f0",
+          },
+        },
+        axisLabel: {
+          color: "#64748b",
+        },
       },
       series: [
         {
           data: [],
           type: "bar",
+          barWidth: "40%",
+          itemStyle: {
+            borderRadius: [8, 8, 0, 0],
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: "#4f8cff" },
+              { offset: 1, color: "#8cd0ff" },
+            ]),
+            shadowBlur: 14,
+            shadowColor: "rgba(79, 140, 255, 0.3)",
+            shadowOffsetY: 6,
+          },
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 18,
+              shadowColor: "rgba(79, 140, 255, 0.45)",
+            },
+          },
         },
       ],
     };
@@ -70,11 +114,30 @@ const SalesCharts = () => {
   const getSalesTrend = async (value: number) => {
     const { data: res } = await statsApi.salesTrend(value);
     const list = res.data.list || [];
-    const xAxisData = list.map((item: any) => item.date);
+    const xAxisData = list.map((item: any) => {
+      const dateStr = item.date || "";
+      return dateStr.slice(5);
+    });
     const seriesData = list.map((item: any) => item.sales);
+
     chartInstance.current?.setOption({
       xAxis: { data: xAxisData },
-      series: [{ data: seriesData, type: "bar" }],
+      series: [
+        {
+          data: seriesData,
+          type: "bar",
+          itemStyle: {
+            borderRadius: [8, 8, 0, 0],
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: "#4f8cff" },
+              { offset: 1, color: "#8cd0ff" },
+            ]),
+            shadowBlur: 14,
+            shadowColor: "rgba(79, 140, 255, 0.3)",
+            shadowOffsetY: 6,
+          },
+        },
+      ],
     });
   };
 

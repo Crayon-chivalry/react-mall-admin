@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useLocation, useNavigate, useMatches } from "react-router-dom";
+import { useLocation, useMatches } from "react-router-dom";
 import useUserStore from "@/store/userStore";
 import useMenuStore from "@/store/menuStore";
 import type { MenuItem as AdminMenuItem } from "@/api/types";
@@ -63,13 +63,12 @@ const findMenuPath = (
 
 interface HandleTitle {
   title?: string;
-}
+};
 
 const MainHeader = () => {
   const { user, signOut } = useUserStore();
   const { menus } = useMenuStore();
   const location = useLocation();
-  const navigate = useNavigate();
   const matches = useMatches();
 
   const menuClick: MenuProps["onClick"] = (menuItem) => {
@@ -85,42 +84,20 @@ const MainHeader = () => {
     // 1. 优先从菜单树查找（层级最完整）
     const menuPath = findMenuPath(menus, pathname);
     if (menuPath && menuPath.length > 0) {
-      return menuPath.map((node, index) => {
-        const isLast = index === menuPath.length - 1;
-        const menuItem: { title: React.ReactNode } = {
-          title: isLast ? (
-            node.name
-          ) : (
-            <a onClick={() => node.path && navigate(node.path)}>{node.name}</a>
-          ),
-        };
-        return menuItem;
-      });
+      return menuPath.map((node) => ({ title: node.name }));
     }
 
     // 2. 回退方案：使用路由 handle.title
     const routeTitles = matches
       .filter((m) => m.handle && (m.handle as HandleTitle).title)
-      .map((m) => ({
-        title: (m.handle as HandleTitle).title as string,
-        path: m.pathname,
-      }));
+      .map((m) => ({ title: (m.handle as HandleTitle).title as string }));
 
     if (routeTitles.length === 0) {
       return [{ title: "首页" }];
     }
 
-    return routeTitles.map((item, index) => {
-      const isLast = index === routeTitles.length - 1;
-      return {
-        title: isLast ? (
-          item.title
-        ) : (
-          <a onClick={() => navigate(item.path)}>{item.title}</a>
-        ),
-      };
-    });
-  }, [location.pathname, menus, matches, navigate]);
+    return routeTitles;
+  }, [location.pathname, menus, matches]);
 
   return (
     <Header className={styles["header"]}>

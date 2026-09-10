@@ -14,13 +14,13 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 
 import styles from "./index.module.scss";
-import type { GoodsItem, CategoriesItem, SkuItem, SpecsItem } from "@/api/types";
+import type { GoodsItem, CategoriesItem, SkuItem } from "@/api/types";
 import { categoriesApi } from "@/api/categoriesApi";
 import { goodsApi } from "@/api/goodsApi";
 import PageHeader from "@/components/PageHeader";
 import UploadImages from "@/components/UploadImages";
 import RichEditor from "@/components/RichEditor";
-import SkuForm from "./components/SkuForm";
+import SkuForm from "../components/SkuForm";
 
 const rules = {
   name: [{ required: true, message: "请输入商品名称" }],
@@ -44,7 +44,7 @@ const cleanSku = ({ title, specs, price, stock, cover, isDefault }: SkuItem) => 
   title, specs, price, stock, cover, isDefault,
 });
 
-const GoodsForm = () => {
+const ProductsForm = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id');
   const { message } = App.useApp();
@@ -87,7 +87,7 @@ const GoodsForm = () => {
 
   return (
     <div className="column-gap">
-      <PageHeader title="新增商品">
+      <PageHeader title="新增商品" showBack>
         <Button type="primary" size="large" icon={<PlusOutlined />}>
           保存商品
         </Button>
@@ -181,4 +181,4 @@ const GoodsForm = () => {
   );
 };
 
-export default GoodsForm;
+export default ProductsForm;

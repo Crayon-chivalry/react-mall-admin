@@ -8,7 +8,7 @@ import {
   type TableProps,
   Popconfirm,
 } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 
 import PageHeader from "@/components/PageHeader";
 import TableFiltering from "@/components/TableFiltering";
@@ -18,7 +18,7 @@ import {
 } from "@/components/TableFiltering/filterTypes";
 import CategorizeForm, {
   type CategorizeRef,
-} from "./components/CategorizeForm";
+} from "../components/CategorizeForm";
 import TableCard from "@/components/TableCard";
 import useTablePagination from "@/components/TableCard/useTablePagination";
 import type {
