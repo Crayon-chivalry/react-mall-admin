@@ -33,11 +33,11 @@ request.interceptors.response.use(
     return response;
   },
   (error) => {
-    // if (error.response?.status === 401) {
-    //   // token 过期，跳转登录
-    //   localStorage.removeItem('token');
-    //   window.location.href = '/login';
-    // }
+    if (error.response?.status === 401) {
+      // token 过期，跳转登录
+      useUserStore.getState().signOut()
+      window.location.href = '/login';
+    }
     const content =
       error?.response?.data?.message || error?.message || String(error);
     message.open({

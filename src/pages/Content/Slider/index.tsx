@@ -22,7 +22,7 @@ import {
 } from "@ant-design/icons";
 
 import PageHeader from "@/components/PageHeader/index";
-import SliderForm, { type SliderFormRef } from "./components/SliderForm";
+import SliderForm, { type SliderFormRef } from "../components/SliderForm";
 import styles from "./index.module.scss";
 import { sliderApi } from "@/api/sliderApi";
 import type { SliderItem } from "@/api/types";

@@ -11,13 +11,13 @@ import Menus from "@/pages/Rbac/Menus";
 import Shop from "@/pages/Shop";
 import ProductsForm from "@/pages/Shop/ProductsForm";
 import Categorize from "@/pages/Shop/Categorize";
-import Setting from "@/pages/Setting";
-import Slider from "@/pages/Slider";
-import Logs from "@/pages/Logs";
+import Setting from "@/pages/System";
+import Slider from "@/pages/Content/Slider";
+import Entries from "@/pages/Content/Entries";
+import Promo from "@/pages/Content/Promo";
+import Logs from "@/pages/System/Logs";
 import NotFound from "@/pages/NotFound";
 import Forbidden from "@/pages/Forbidden";
-import Entries from "@/pages/Entries";
-import Promo from "@/pages/Promo";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +28,7 @@ const router = createBrowserRouter([
       </RequireAuth>
     ),
     children: [
+      // 仪表板
       {
         index: true,
         element: <Dashboard />,
@@ -94,27 +95,39 @@ const router = createBrowserRouter([
           },
         ],
       },
+      // 系统管理
       {
-        path: "/roles",
-        element: <Roles />,
-        handle: { title: "角色管理" },
+        path: "/system",
+        handle: { title: "系统管理" },
+        children: [
+          {
+            index: true,
+            element: <Setting />,
+            handle: { title: "系统设置" },
+          },
+          {
+            path: "logs",
+            element: <Logs />,
+            handle: { title: "操作日志" },
+          },
+        ],
       },
+      // 权限管理
       {
-        path: "/menus",
-        element: <Menus />,
-        handle: { title: "菜单管理" },
-      },
-
-      {
-        path: "/setting",
-        element: <Setting />,
-        handle: { title: "系统设置" },
-      },
-
-      {
-        path: "/logs",
-        element: <Logs />,
-        handle: { title: "操作日志" },
+        path: "/rbac",
+        handle: { title: "权限管理" },
+        children: [
+          {
+            path: "roles",
+            element: <Roles />,
+            handle: { title: "角色管理" },
+          },
+          {
+            path: "menus",
+            element: <Menus />,
+            handle: { title: "菜单管理" },
+          },
+        ],
       },
     ],
   },

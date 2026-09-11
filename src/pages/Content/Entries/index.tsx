@@ -1,51 +1,88 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  Image,
   Flex,
   Button,
   Popconfirm,
-  Tag,
   App,
   type TableProps,
 } from "antd";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 
-import type { PromoItem, Pagination } from "@/api/types";
 import { contentApi } from "@/api/contentApi";
+import { defineStatusOptions, createStatusTagRenderer } from "@/utils/status";
+import {
+  type Pagination,
+  type EntriesItem,
+  type EntriesListParams,
+} from "@/api/types";
+import PageHeader from "@/components/PageHeader";
+// 筛选相关
+import TableFiltering from "@/components/TableFiltering";
+import {
+  type FilterItem,
+  type FormValues,
+} from "@/components/TableFiltering/filterTypes";
+// 表格相关
 import TableCard from "@/components/TableCard";
 import useTablePagination from "@/components/TableCard/useTablePagination";
 import useTableSelection from "@/components/TableCard/useTableSelection";
-import PageHeader from "@/components/PageHeader";
-import PromoForm, { type PromoFormRef } from "./components/PromoForm";
+// 表单
+import EntriesForm, { type EntriesFormRef } from "../components/EntriesForm";
 
-// 布局类型名称
-const layoutTypeName = {
-  single: "单图",
-  double: "双图",
-  triple: "三图",
-};
+// 筛选配置
+const filterList: FilterItem[] = [
+  {
+    label: "标题",
+    name: "title",
+    placeholder: "请输入标题",
+    type: "input",
+  },
+  {
+    label: "状态",
+    name: "isEnabled",
+    placeholder: "请选择状态",
+    type: "select",
+    options: [
+      { label: "全部", value: "" },
+      { label: "已启用", value: true },
+      { label: "已禁用", value: false },
+    ],
+    defaultValue: "",
+  },
+];
 
-const Promo = () => {
-  const columns: TableProps<PromoItem>["columns"] = [
+// 状态列表
+const statusList = defineStatusOptions<EntriesItem["isEnabled"]>([
+  { label: "已启用", value: true, color: "green" },
+  { label: "已禁用", value: false, color: "red" },
+])
+const renderStatusTag = createStatusTagRenderer(statusList);
+
+const Entries = () => {
+  // 表单项
+  const columns: TableProps<EntriesItem>["columns"] = [
+    {
+      title: "图标",
+      dataIndex: "avatar",
+      key: "avatar",
+      render: (_, { iconUrl }) => <Image src={iconUrl} width={40} />,
+    },
     {
       title: "标题",
       dataIndex: "title",
       key: "title",
     },
     {
-      title: "布局",
-      dataIndex: "layoutType",
-      key: "layoutType",
-      render: (_, { layoutType }) => layoutTypeName[layoutType],
+      title: "跳转链接",
+      dataIndex: "linkUrl",
+      key: "linkUrl",
     },
     {
       title: "状态",
       dataIndex: "isEnabled",
       key: "isEnabled",
-      render: (_, { isEnabled }) => (
-        <Tag color={isEnabled ? "green" : "red"}>
-          {isEnabled ? "启用" : "禁用"}
-        </Tag>
-      ),
+      render: (_, { isEnabled }) => renderStatusTag(isEnabled),
     },
     {
       title: "排序",
@@ -83,18 +120,33 @@ const Promo = () => {
   ];
 
   const { message } = App.useApp();
-  const formRef = useRef<PromoFormRef>(null);
-  const [list, setList] = useState<PromoItem[]>([]);
+  const formRef = useRef<EntriesFormRef>(null);
+  const [list, setList] = useState<EntriesItem[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
     pageSize: 10,
     total: 0,
   });
+  const [searchParams, setSearchParams] = useState<Partial<EntriesListParams>>(
+    {},
+  );
   const { selectedRowKeys, rowSelection, clearSelectedRowKeys } =
-    useTableSelection<PromoItem>();
+    useTableSelection<EntriesItem>();
 
-  // 显示添加表单
-  const handleShowForm = (item?: PromoItem) => {
+  // 搜索
+  const onSearch = (values: FormValues) => {
+    const params: Partial<EntriesListParams> = {
+      ...(values.title ? { title: String(values.title) } : {}),
+      ...(typeof values.isEnabled === "boolean"
+        ? { isEnabled: values.isEnabled }
+        : {}),
+    };
+    setSearchParams(params);
+    getList(1, pagination.pageSize, params);
+  };
+
+  // 显示表单
+  const handleShowForm = (item?: EntriesItem) => {
     formRef.current?.showDrawer(item);
   };
 
@@ -102,10 +154,12 @@ const Promo = () => {
   const getList = async (
     page = pagination.page,
     pageSize = pagination.pageSize,
+    params: Partial<EntriesListParams> = searchParams,
   ) => {
-    const { data: res } = await contentApi.promoList({
+    const { data: res } = await contentApi.entriesList({
       page,
       pageSize,
+      ...params,
     });
     setList(res.data.list);
     setPagination(res.data.pagination);
@@ -113,7 +167,7 @@ const Promo = () => {
 
   // 删除
   const handleDel = async (id?: number) => {
-    const { data: res } = await contentApi.promoDelete(
+    const { data: res } = await contentApi.entriesDelete(
       id ? [id] : selectedRowKeys.map((key) => Number(key)),
     );
     clearSelectedRowKeys();
@@ -130,7 +184,7 @@ const Promo = () => {
 
   return (
     <div className="column-gap">
-      <PageHeader title="广告列表" des="主要展示首页广告、促销位">
+      <PageHeader title="金刚区入口" des="首页金刚区，快捷入口列表">
         <Button
           type="primary"
           size="large"
@@ -141,7 +195,9 @@ const Promo = () => {
         </Button>
       </PageHeader>
 
-      <TableCard<PromoItem>
+      <TableFiltering filterList={filterList} onSubmit={onSearch} />
+
+      <TableCard<EntriesItem>
         toolbar={
           <Flex align="center" gap="middle">
             <Popconfirm
@@ -165,9 +221,10 @@ const Promo = () => {
         onChange={handleTableChange}
       />
 
-      <PromoForm ref={formRef} onSuccess={() => getList()} />
+      {/* 表单 */}
+      <EntriesForm ref={formRef} onSuccess={() => getList()} />
     </div>
   );
 };
 
-export default Promo;
+export default Entries;

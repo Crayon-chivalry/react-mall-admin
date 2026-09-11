@@ -87,7 +87,7 @@ const ProductsForm = () => {
 
   return (
     <div className="column-gap">
-      <PageHeader title="新增商品" showBack>
+      <PageHeader title={id ? "编辑商品": "新增商品"} showBack>
         <Button type="primary" size="large" icon={<PlusOutlined />}>
           保存商品
         </Button>

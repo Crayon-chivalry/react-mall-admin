@@ -2,7 +2,6 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 import { Drawer, Form, Input, InputNumber, Button, Switch, App } from "antd";
 
 import UploadImages from "@/components/UploadImages";
-import styles from "../index.module.scss";
 import { sliderApi } from "@/api/sliderApi";
 import type { SliderItem } from "@/api/types";
 
@@ -76,7 +75,6 @@ const SliderForm = forwardRef<SliderFormRef, SliderFormProps>((props, ref) => {
       <Form
         form={form}
         layout="vertical"
-        className={styles["form"]}
         onFinish={onFinish}
       >
         <Form.Item<FieldType> label="标题" name="title" rules={rules.title}>

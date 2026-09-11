@@ -129,7 +129,7 @@ const Roles = () => {
   return (
     <div className="column-gap">
       <div className={styles["roles-panel"]}>
-        <h2>权限管理</h2>
+        <h2>角色管理</h2>
         <p>
           基于角色的访问控制 (RBAC)
           引擎。精准定义各级运营人员的菜单访问路径与操作动作权限。
@@ -148,7 +148,7 @@ const Roles = () => {
             size="large"
             variant="outlined"
             icon={<ProfileOutlined />}
-            onClick={() => navigate("/logs")}
+            onClick={() => navigate("/system/logs")}
           >
             操作日志
           </Button>

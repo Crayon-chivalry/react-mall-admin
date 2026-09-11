@@ -7,7 +7,7 @@ import type { MenuItem } from "@/api/types";
 import { createStatusTagRenderer, defineStatusOptions } from "@/utils/status";
 import PageHeader from '@/components/PageHeader'
 import MenuIcon from '@/components/MenuIcon';
-import MenusForm, { type MenusFormRef } from './components/MenusForm'
+import MenusForm, { type MenusFormRef } from '../components/MenusForm'
 import TableCard from "@/components/TableCard";
 
 // 类型列表配置
