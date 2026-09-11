@@ -11,6 +11,7 @@ import Menus from "@/pages/Rbac/Menus";
 import Shop from "@/pages/Shop";
 import ProductsForm from "@/pages/Shop/ProductsForm";
 import Categorize from "@/pages/Shop/Categorize";
+import Orders from "@/pages/Shop/Orders";
 import Setting from "@/pages/System";
 import Slider from "@/pages/Content/Slider";
 import Entries from "@/pages/Content/Entries";
@@ -70,6 +71,11 @@ const router = createBrowserRouter([
             path: "categorize",
             element: <Categorize />,
             handle: { title: "分类管理" },
+          },
+          {
+            path: "orders",
+            element: <Orders />,
+            handle: { title: "订单列表" },
           },
         ],
       },

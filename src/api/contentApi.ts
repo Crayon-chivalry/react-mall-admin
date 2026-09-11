@@ -49,6 +49,7 @@ export const contentApi = {
     return request.patch<ApiResponse>(`/promo-sections/${id}`, params);
   },
 
+  // 删除广告促销
   promoDelete: (ids: number[]) => {
     return request.delete<ApiResponse>("/promo-sections", { data: { ids } });
   }

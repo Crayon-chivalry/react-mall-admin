@@ -2,7 +2,7 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 import { Drawer, Form, Input, InputNumber, Button, Switch, Select, App } from "antd";
 
 import UploadImages from "@/components/UploadImages";
-import { categoriesApi } from "@/api/categoriesApi";
+import { shopApi } from "@/api/shopApi";
 import type { CategoriesItem } from "@/api/types";
 
 export interface CategorizeRef {
@@ -47,7 +47,7 @@ const SliderForm = forwardRef<CategorizeRef, SliderFormProps>((props, ref) => {
 
   // 获取一级分类
   const getParentList = async () => {
-    const { data: res } = await categoriesApi.parentList()
+    const { data: res } = await shopApi.categoriesParent()
     const newOptions = res.data.map((item: CategoriesItem) => {
       return {label: item.name, value: item.id}
     })
@@ -57,8 +57,8 @@ const SliderForm = forwardRef<CategorizeRef, SliderFormProps>((props, ref) => {
   // 提交
   const onFinish = async (values: CategoriesItem) => {
     const { data: res } = editingItem
-      ? await categoriesApi.update(editingItem.id, values)
-      : await categoriesApi.add(values);
+      ? await shopApi.updateCategories(editingItem.id, values)
+      : await shopApi.addCategories(values);
     message.success(res.message);
     onSuccess?.(res.data);
     onClose();

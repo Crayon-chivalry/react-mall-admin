@@ -14,9 +14,8 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 
 import styles from "./index.module.scss";
-import type { GoodsItem, CategoriesItem, SkuItem } from "@/api/types";
-import { categoriesApi } from "@/api/categoriesApi";
-import { goodsApi } from "@/api/goodsApi";
+import type { ProductItem, CategoriesItem, SkuItem } from "@/api/types";
+import { shopApi } from "@/api/shopApi";
 import PageHeader from "@/components/PageHeader";
 import UploadImages from "@/components/UploadImages";
 import RichEditor from "@/components/RichEditor";
@@ -50,17 +49,17 @@ const ProductsForm = () => {
   const { message } = App.useApp();
   const [form] = Form.useForm();
   const [categoriesList, setCategoriesList] = useState<CategoriesItem[]>([]);
-  const [editingItem, setEditingItem] = useState<GoodsItem | null>(null);
+  const [editingItem, setEditingItem] = useState<ProductItem | null>(null);
   const specType = Form.useWatch("specType", form) ?? "single";
   const [skus, setSkus] = useState<SkuItem[]>([{ ...EMPTY_SKU, isDefault: true }]);
 
   const getCategoriesList = async () => {
-    const { data: res } = await categoriesApi.parentList(2);
+    const { data: res } = await shopApi.categoriesParent(2);
     setCategoriesList(res.data);
   };
 
   const getGoodsDetail = async () => {
-    const { data: res } = await goodsApi.get(id as unknown as number);
+    const { data: res } = await shopApi.product(id as unknown as number);
     setEditingItem(res.data);
     form.setFieldsValue({...res.data, categoryId: res.data.category.id});
     if (res.data.specType === "multi" && res.data.skus?.length) {
@@ -68,14 +67,14 @@ const ProductsForm = () => {
     }
   };
 
-  const onFinish = async (values: GoodsItem) => {
+  const onFinish = async (values: ProductItem) => {
     const payload = {
       ...values,
       ...(specType === "multi" ? { skus: skus.map(cleanSku) } : {}),
     };
     const { data: res } = editingItem
-      ? await goodsApi.update(editingItem.id, payload)
-      : await goodsApi.add(payload);
+      ? await shopApi.updateProduct(editingItem.id, payload)
+      : await shopApi.addProduct(payload);
     message.success(res.message);
   };
 
@@ -93,16 +92,16 @@ const ProductsForm = () => {
         </Button>
       </PageHeader>
       <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Form.Item<GoodsItem> name="specType" hidden><Input /></Form.Item>
+        <Form.Item<ProductItem> name="specType" hidden><Input /></Form.Item>
         <div className="column-gap">
           {/* 基本信息 */}
           <div className="app-card">
             <div className={styles["card-title"]}>基本信息</div>
             <Divider />
-            <Form.Item<GoodsItem> label="商品名称" name="name" rules={rules.name}>
+            <Form.Item<ProductItem> label="商品名称" name="name" rules={rules.name}>
               <Input size="large" placeholder="请输入名称" />
             </Form.Item>
-            <Form.Item<GoodsItem> label="商品类目" name="categoryId" rules={rules.categoryId}>
+            <Form.Item<ProductItem> label="商品类目" name="categoryId" rules={rules.categoryId}>
               <Select
                 options={categoriesList}
                 fieldNames={{ label: "name", value: "id" }}
@@ -110,7 +109,7 @@ const ProductsForm = () => {
                 size="large"
               />
             </Form.Item>
-            <Form.Item<GoodsItem> label="商品描述" name="description">
+            <Form.Item<ProductItem> label="商品描述" name="description">
               <Input size="large" placeholder="请输入商品描述" />
             </Form.Item>
           </div>
@@ -136,10 +135,10 @@ const ProductsForm = () => {
 
             {specType === "single" ? (
               <Flex wrap gap="middle">
-                <Form.Item<GoodsItem> label="商品价格" name="price" rules={rules.price}>
+                <Form.Item<ProductItem> label="商品价格" name="price" rules={rules.price}>
                   <InputNumber stringMode placeholder="请输入商品价格" className={styles["input-number"]} />
                 </Form.Item>
-                <Form.Item<GoodsItem> label="商品库存" name="stock" rules={rules.stock}>
+                <Form.Item<ProductItem> label="商品库存" name="stock" rules={rules.stock}>
                   <InputNumber stringMode placeholder="请输入商品库存" className={styles["input-number"]} />
                 </Form.Item>
               </Flex>
@@ -152,21 +151,21 @@ const ProductsForm = () => {
           <div className="app-card">
             <div className={styles["card-title"]}>图文信息</div>
             <Divider />
-            <Form.Item<GoodsItem> label="商品主图" name="images" rules={rules.images}>
+            <Form.Item<ProductItem> label="商品主图" name="images" rules={rules.images}>
               <UploadImages
                 maxCount={9}
                 initialUrls={editingItem?.images ?? []}
                 onUploadSuccess={(urls) => form.setFieldsValue({ images: urls })}
               />
             </Form.Item>
-            <Form.Item<GoodsItem> label="商品封面图">
+            <Form.Item<ProductItem> label="商品封面图">
               <UploadImages
                 initialUrls={editingItem?.cover ? [editingItem.cover] : []}
                 onUploadSuccess={(urls) => form.setFieldsValue({ cover: urls[0] })}
               />
               <div className={styles["prompt"]}>可不传，封面图默认为商品主图第一张</div>
             </Form.Item>
-            <Form.Item<GoodsItem> name="detailContent" label="商品详情">
+            <Form.Item<ProductItem> name="detailContent" label="商品详情">
               <RichEditor />
             </Form.Item>
             <Form.Item>

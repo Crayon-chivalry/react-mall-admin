@@ -24,7 +24,9 @@ export interface BaseListParams {
   pageSize: number
 }
 
-// User
+/**
+ * User
+ */
 export interface LoginParams {
   account: string
   password: string
@@ -71,21 +73,6 @@ export interface SliderItem extends SliderParams {
 export interface SliderListParams extends BaseListParams {
   title?: string
   isEnabled?: boolean
-}
-
-// 分类
-export interface CategoriesItem {
-  id: number
-  name: string
-  icon: string
-  isVisible: boolean
-  parentId: number
-  sort: number
-}
-
-export interface CategoriesListParams extends BaseListParams {
-  keyword?: string
-  isVisible?: number | boolean
 }
 
 // 日志
@@ -181,7 +168,23 @@ export interface PromoItem {
   isEnabled: boolean
 }
 
-// 商品相关
+/**
+ * 商城相关
+ */
+export interface CategoriesItem {
+  id: number
+  name: string
+  icon: string
+  isVisible: boolean
+  parentId: number
+  sort: number
+}
+
+export interface CategoriesListParams extends BaseListParams {
+  keyword?: string
+  isVisible?: number | boolean
+}
+
 export interface GoodsListParams extends BaseListParams {
   keyword?: string
   categoryId?: number
@@ -202,7 +205,7 @@ export interface SkuItem {
   isDefault: boolean
 }
 
-export interface GoodsItem {
+export interface ProductItem {
   id: number
   name: string
   price: string
@@ -216,4 +219,47 @@ export interface GoodsItem {
   skus: SkuItem[]
   category: CategoriesItem
   specType: "single" | "multi"
+}
+
+export type OrderStatus = "pending" | "paid" | "shipped" | "completed"
+
+export interface OrderShipParams {
+  expressCompany: string
+  shippingNo: string
+}
+
+export interface OrderListParams extends BaseListParams {
+  status?: OrderStatus
+  orderNo?: string
+}
+
+export interface OrderProductItem {
+  id: number
+  price: string
+  productCover: string
+  productName: string
+  quantity: number
+  skuTitle: string
+  product: ProductItem
+  sku: SkuItem[]
+  skuSpecs: SpecsItem[]
+}
+
+export interface OrderItem {
+  id: number
+  createdAt: string
+  orderNo: string
+  totalAmount: string
+  status: OrderStatus
+  remark: string
+  receiverName: string
+  receiverPhone: number
+  province: string
+  city: string
+  district: string
+  detailAddress: string
+  postalCode: string
+  items: OrderProductItem[]
+  paymentType: string
+  paidAt: string
 }

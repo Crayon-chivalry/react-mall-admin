@@ -26,7 +26,7 @@ import type {
   Pagination,
   CategoriesListParams,
 } from "@/api/types";
-import { categoriesApi } from "@/api/categoriesApi";
+import { shopApi } from "@/api/shopApi";
 
 // 筛选配置
 const filterList: FilterItem[] = [
@@ -140,7 +140,7 @@ const Categorize = () => {
     pageSize = pagination.pageSize,
     params: Partial<CategoriesListParams> = searchParams,
   ) => {
-    const { data: res } = await categoriesApi.list({
+    const { data: res } = await shopApi.categoriesList({
       page,
       pageSize,
       ...params,
@@ -155,7 +155,7 @@ const Categorize = () => {
 
   // 删除分类
   const handleDelete = async (id: number) => {
-    const { data: res } = await categoriesApi.delete(id);
+    const { data: res } = await shopApi.deleteCategories(id);
     message.success(res.message);
     getList();
   };

@@ -12,10 +12,9 @@ import {
 import { PlusOutlined, RiseOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import styles from "./index.module.scss";
-import { goodsApi } from "@/api/goodsApi";
-import { categoriesApi } from "@/api/categoriesApi";
+import { shopApi } from "@/api/shopApi";
 import type {
-  GoodsItem,
+  ProductItem,
   Pagination,
   GoodsListParams,
   CategoriesItem,
@@ -53,7 +52,7 @@ const dataList = [
 
 const Products = () => {
   // 配置项
-  const columns: TableProps<GoodsItem>["columns"] = [
+  const columns: TableProps<ProductItem>["columns"] = [
     {
       title: "封面图",
       dataIndex: "cover",
@@ -128,7 +127,7 @@ const Products = () => {
 
   const navigate = useNavigate();
   const { message } = App.useApp();
-  const [list, setList] = useState<GoodsItem[]>([]);
+  const [list, setList] = useState<ProductItem[]>([]);
   const [categoriesList, setCategoriesList] = useState<CategoriesItem[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
@@ -136,7 +135,7 @@ const Products = () => {
     total: 0,
   });
   const { selectedRowKeys, rowSelection, clearSelectedRowKeys } =
-    useTableSelection<GoodsItem>();
+    useTableSelection<ProductItem>();
   const [searchParams, setSearchParams] = useState<Partial<GoodsListParams>>(
     {},
   );
@@ -198,7 +197,7 @@ const Products = () => {
 
   // 获取二级分类
   const getCategoriesList = async () => {
-    const { data: res } = await categoriesApi.parentList(2);
+    const { data: res } = await shopApi.categoriesParent(2);
     setCategoriesList(res.data);
   };
 
@@ -208,7 +207,7 @@ const Products = () => {
     pageSize = pagination.pageSize,
     params: Partial<GoodsListParams> = searchParams,
   ) => {
-    const { data: res } = await goodsApi.list({
+    const { data: res } = await shopApi.productList({
       page,
       pageSize,
       ...params,
@@ -219,7 +218,7 @@ const Products = () => {
 
   // 删除
   const handleDel = async (id?: number) => {
-    const { data: res } = await goodsApi.deletes(
+    const { data: res } = await shopApi.deletesProduct(
       id ? [Number(id)] : selectedRowKeys.map((key) => Number(key)),
     );
     clearSelectedRowKeys();
@@ -281,7 +280,7 @@ const Products = () => {
       <TableFiltering filterList={filterList} onSubmit={onSearch} />
 
       {/* 表格 */}
-      <TableCard<GoodsItem>
+      <TableCard<ProductItem>
         toolbar={
           <Flex align="center" gap="middle">
             <Popconfirm

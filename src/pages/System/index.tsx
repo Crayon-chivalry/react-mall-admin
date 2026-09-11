@@ -1,13 +1,12 @@
 import { Col, Row, Input, Divider, Flex, Button, Tag, Switch } from "antd";
 import { CopyOutlined, InsuranceOutlined } from "@ant-design/icons";
-import cn from "classnames";
 
 import PageHeader from "@/components/PageHeader";
 import styles from "./index.module.scss";
 
 const Setting = () => {
   return (
-    <div className={styles["column-gap"]}>
+    <div className="column-gap">
       <PageHeader
         title="系统设置"
         des="管理全局站点参数、联系信息以及高级技术配置"
@@ -18,7 +17,7 @@ const Setting = () => {
         <Col span={16}>
           <Flex vertical={true} gap="large">
             {/* 基本信息 */}
-            <div className={styles["app-card"]}>
+            <div className="app-card">
               <div className={styles["card-header"]}>
                 <img
                   src="/src/assets/images/setting-info.png"
@@ -64,7 +63,7 @@ const Setting = () => {
             </div>
 
             {/* API与开发者工具 */}
-            <div className={styles["app-card"]}>
+            <div className="app-card">
               <div className={styles["card-header"]}>
                 <img
                   src="/src/assets/images/setting-api.png"
@@ -108,7 +107,7 @@ const Setting = () => {
         <Col span={8}>
           <Flex vertical={true} gap="large">
             {/* 系统状态 */}
-            <div className={styles["app-card"]}>
+            <div className="app-card">
               <Flex vertical={true} gap="large">
                 <Flex align="center" justify="space-between">
                   <h3>系统状态</h3>
@@ -136,7 +135,7 @@ const Setting = () => {
               </Flex>
             </div>
             {/* 联系与支持 */}
-            <div className={styles["app-card"]}>
+            <div className="app-card">
               <Flex vertical={true} gap="large">
                 <Flex align="center" gap="small">
                   <img
@@ -160,7 +159,7 @@ const Setting = () => {
                 </Flex>
               </Flex>
             </div>
-            <div className={cn(styles["app-card"], styles.health)}>
+            <div className={styles.health}>
               <div>系统配置健康值</div>
               <div className={styles["health-value"]}>98<span>%</span></div>
               <div className={styles["health-label"]}>

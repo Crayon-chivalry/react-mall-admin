@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import { statsApi } from "@/api/statsApi";
 import styles from "../index.module.scss"
 
-interface GoodsItem {
+interface ProductItem {
   productCover: string
   productId: number
   productName: string
@@ -13,7 +13,7 @@ interface GoodsItem {
 }
 
 const HotGoods = () => {
-  const [list, setList] = useState<GoodsItem[]>([])
+  const [list, setList] = useState<ProductItem[]>([])
 
   // 获取热销商品
   const getTopProducts = async () => {

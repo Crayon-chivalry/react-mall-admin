@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import { rbacApi } from '@/api/rbacApi';
 import type { MenuItem } from "@/api/types";
+import useMenuStore from '@/store/menuStore';
 import { createStatusTagRenderer, defineStatusOptions } from "@/utils/status";
 import PageHeader from '@/components/PageHeader'
 import MenuIcon from '@/components/MenuIcon';
@@ -75,6 +76,7 @@ const Menus = () => {
 
   const { message } = App.useApp();
   const formRef = useRef<MenusFormRef>(null);
+  const { setMenus: setMenuStore } = useMenuStore();
   const [menusList, setMenusList] = useState<MenuItem[]>([]);
 
   // 显示表单抽屉(新增、编辑)
@@ -92,8 +94,13 @@ const Menus = () => {
 
   // 获取菜单树
   const getMenus = async () => {
-    const { data: res } = await rbacApi.menus()
-    setMenusList(res.data)
+    const [{ data: menusRes }, { data: routersRes }] = await Promise.all([
+      rbacApi.menus(),
+      rbacApi.routers(),
+    ]);
+
+    setMenusList(menusRes.data);
+    setMenuStore(routersRes.data);
   }
 
   // 删除
