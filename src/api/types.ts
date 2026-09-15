@@ -211,6 +211,7 @@ export interface ProductItem {
   name: string
   price: string
   stock: number
+  sales: number
   categoryId: number
   cover: string
   images: string[]

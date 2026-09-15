@@ -1,10 +1,31 @@
-import { Col, Row, Input, Divider, Flex, Button, Tag, Switch } from "antd";
+import { useEffect } from "react";
+import { Col, Row, Input, Divider, Flex, Button, Tag, Switch, App } from "antd";
 import { CopyOutlined, InsuranceOutlined } from "@ant-design/icons";
 
-import PageHeader from "@/components/PageHeader";
 import styles from "./index.module.scss";
+import { systemApi } from "@/api/systemApi";
+import PageHeader from "@/components/PageHeader";
+import UploadImages from "@/components/UploadImages";
 
 const Setting = () => {
+  const { message } = App.useApp();
+
+  // 获取系统设置
+  const getSettings = async () => {
+    const { data: res } = await systemApi.settings();
+    console.log(res.data.list);
+  };
+
+  // 设置默认头像
+  const setDefaultAvatar = async (urls: string[]) => {
+    const { data: res } = await systemApi.defaultAvatar(urls[0]);
+    message.success(res.message);
+  };
+
+  useEffect(() => {
+    getSettings();
+  }, []);
+
   return (
     <div className="column-gap">
       <PageHeader
@@ -43,21 +64,16 @@ const Setting = () => {
               </Row>
               <Divider />
               <div className={styles["logo"]}>
-                <img src="/src/assets/images/logo.png" alt="logo" />
+                <UploadImages
+                  initialUrls={[]}
+                  onUploadSuccess={(urls) => setDefaultAvatar(urls)}
+                />
                 <div className={styles["logo-info"]}>
-                  <h3>站点Logo</h3>
+                  <h3>默认头像</h3>
                   <div>
                     <p>建议使用透明背景的 PNG 或 SVG 格式。</p>
                     <p>推荐尺寸 256x256px，最大文件 2MB。</p>
                   </div>
-                  <Flex gap="middle" wrap>
-                    <Button color="primary" variant="outlined">
-                      上传新图片
-                    </Button>
-                    <Button color="danger" variant="outlined">
-                      移除
-                    </Button>
-                  </Flex>
                 </div>
               </div>
             </div>
@@ -161,7 +177,9 @@ const Setting = () => {
             </div>
             <div className={styles.health}>
               <div>系统配置健康值</div>
-              <div className={styles["health-value"]}>98<span>%</span></div>
+              <div className={styles["health-value"]}>
+                98<span>%</span>
+              </div>
               <div className={styles["health-label"]}>
                 <InsuranceOutlined />
                 已根据最新安全标准优化

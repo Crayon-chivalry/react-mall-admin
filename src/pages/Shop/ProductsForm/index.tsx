@@ -224,6 +224,19 @@ const ProductsForm = () => {
             </Flex>
             <Divider />
 
+            <Form.Item<ProductItem>
+              label="商品销量"
+              name="sales"
+              tooltip="下单成交后会随订单自动累加，这里可手动调整初始值/修正销量"
+            >
+              <InputNumber
+                min={0}
+                precision={0}
+                placeholder="请输入商品销量"
+                style={{ width: "100%", maxWidth: 240 }}
+              />
+            </Form.Item>
+
             {specType === "single" ? (
               <Flex wrap gap="middle">
                 <Form.Item<ProductItem>

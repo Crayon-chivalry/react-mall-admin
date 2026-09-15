@@ -67,8 +67,11 @@ const UploadImages = ({ maxCount = 1, onUploadSuccess, initialUrls = [] }: Uploa
   };
 
   // 上传文件改变时的回调，父组件可通过 onUploadSuccess 获取已上传的图片 URL
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList, file }) => {
     setFileList(newFileList);
+
+    // 仅在上传成功时触发一次回调，避免 uploading / 受控状态同步带来的重复调用
+    if (file.status !== 'done') return;
 
     const uploadedUrls = newFileList
       .filter((item) => item.status === 'done' || item.url)
@@ -78,7 +81,9 @@ const UploadImages = ({ maxCount = 1, onUploadSuccess, initialUrls = [] }: Uploa
       })
       .filter(Boolean) as string[];
 
-    onUploadSuccess?.(uploadedUrls);
+    if (uploadedUrls.length > 0) {
+      onUploadSuccess?.(uploadedUrls);
+    }
   };
   
   const uploadButton = (

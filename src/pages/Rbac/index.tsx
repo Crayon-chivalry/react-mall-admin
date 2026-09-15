@@ -4,9 +4,7 @@ import { Button, Flex, App, Popconfirm, Tag, type TableProps } from "antd";
 import {
   PlusOutlined,
   ProfileOutlined,
-  EditOutlined,
   DeleteOutlined,
-  KeyOutlined,
 } from "@ant-design/icons";
 
 import styles from "./index.module.scss";
@@ -53,7 +51,6 @@ const Roles = () => {
             color="primary"
             variant="text"
             size="small"
-            icon={<KeyOutlined />}
             onClick={() => handleShowPermissionsForm(item)}
           >
             权限
@@ -62,7 +59,6 @@ const Roles = () => {
             color="primary"
             variant="text"
             size="small"
-            icon={<EditOutlined />}
             onClick={() => handleShowForm(item)}
           >
             编辑
@@ -78,7 +74,6 @@ const Roles = () => {
               color="danger"
               variant="text"
               size="small"
-              icon={<DeleteOutlined />}
             >
               删除
             </Button>
