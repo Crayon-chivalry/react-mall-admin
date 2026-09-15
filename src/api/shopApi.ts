@@ -6,7 +6,8 @@ import type {
   CategoriesListParams,
   CategoriesItem,
   OrderListParams,
-  OrderShipParams
+  OrderShipParams,
+  OrderItem
 } from "./types";
 
 export const shopApi = {
@@ -67,6 +68,11 @@ export const shopApi = {
     return request.get<ApiResponse>("/orders", { params });
   },
 
+  // 订单详情
+  orderDetails: (id: number) => {
+    return request.get<ApiResponse>(`/orders/${id}`);
+  },
+
   // 发货
   orderShip: (id: number, params: OrderShipParams) => {
     return request.post<ApiResponse>(`/orders/${id}/ship`, params);
@@ -76,4 +82,9 @@ export const shopApi = {
   deletesOrder: (ids: number[]) => {
     return request.delete<ApiResponse>(`/orders`, { data: { ids } });
   },
+
+  // 修改订单
+  updateOrder: (id: number, params: OrderItem) => {
+    return request.patch<ApiResponse>(`/orders/${id}`, params);
+  }
 };

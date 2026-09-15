@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
-import {
-  Avatar,
-  Flex,
-  Button,
-  Popconfirm,
-  Tag,
-  App,
-  type TableProps,
-} from "antd";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import { Flex, Button, Popconfirm, App, type TableProps } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 
 import { shopApi } from "@/api/shopApi";
 import { formatLocalTime } from "@/utils/date";
-import type { Pagination, OrderItem } from "@/api/types";
+import type { Pagination, OrderItem, OrderListParams, OrderStatus } from "@/api/types";
+import { createStatusTagRenderer, defineStatusOptions } from "@/utils/status";
 import {
   type FilterItem,
   type FormValues,
@@ -22,19 +16,15 @@ import useTableSelection from "@/components/TableCard/useTableSelection";
 import PageHeader from "@/components/PageHeader";
 import TableFiltering from "@/components/TableFiltering";
 import TableCard from "@/components/TableCard";
-import OrderProductsExpand from "@/pages/Shop/components/OrderProductsExpand";
+import OrderProductsExpand from "../components/OrderProductsExpand";
+import OrderShipModal from "../components/OrderShipModal";
 
+// 筛选配置
 const filterList: FilterItem[] = [
   {
-    label: "手机号",
-    name: "phone",
-    placeholder: "请输入手机号",
-    type: "input",
-  },
-  {
-    label: "昵称",
-    name: "nickname",
-    placeholder: "请输入昵称",
+    label: "订单号",
+    name: "orderNo",
+    placeholder: "请输入订单号",
     type: "input",
   },
   {
@@ -44,12 +34,23 @@ const filterList: FilterItem[] = [
     type: "select",
     options: [
       { label: "全部", value: 99 },
-      { label: "正常", value: 1 },
-      { label: "冻结", value: 2 },
+      { label: "待付款", value: "pending" },
+      { label: "待发货", value: "paid" },
+      { label: "已发货", value: "shipped" },
+      { label: "已完成", value: "completed" },
     ],
     defaultValue: 99,
   },
 ];
+
+// 类型列表配置
+const statusList = defineStatusOptions<OrderItem["status"]>([
+  { label: "待付款", value: "pending", color: "red" },
+  { label: "待发货", value: "paid", color: "green" },
+  { label: "已发货", value: "shipped", color: "warning" },
+  { label: "已完成", value: "completed" },
+]);
+const renderStatusTag = createStatusTagRenderer(statusList);
 
 const Orders = () => {
   // 配置项
@@ -75,9 +76,7 @@ const Orders = () => {
       title: "状态",
       dataIndex: "status",
       key: "status",
-      render: (_, { status }) => (
-        <Tag color={status ? "green" : "red"}>{status ? "正常" : "冻结"}</Tag>
-      ),
+      render: (_, { status }) => renderStatusTag(status),
     },
     {
       title: "操作",
@@ -85,21 +84,23 @@ const Orders = () => {
       key: "operate",
       render: (_, item) => (
         <Flex gap="small">
+          {item.status === "paid" && (
+            <Button
+              color="primary"
+              variant="text"
+              size="small"
+              onClick={() => openShipModal(item)}
+            >
+              发货
+            </Button>
+          )}
           <Button
             color="primary"
             variant="text"
             size="small"
-            // onClick={() => handleShowForm(item)}
+            onClick={() => navigate("/shop/order-details?id=" + item.id)}
           >
             详情
-          </Button>
-          <Button
-            color="primary"
-            variant="text"
-            size="small"
-            // onClick={() => handleShowForm(item)}
-          >
-            发货
           </Button>
           <Popconfirm
             title="提示"
@@ -118,17 +119,38 @@ const Orders = () => {
   ];
 
   const { message } = App.useApp();
+  const navigate = useNavigate()
   const [list, setList] = useState<OrderItem[]>([]);
+  const [isShipModal, setIsShipModal] = useState<boolean>(false);
+  const [activeOrder, setActiveOrder] = useState<OrderItem | null>(null);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
     pageSize: 10,
     total: 0,
   });
+  const [searchParams, setSearchParams] = useState<Partial<OrderListParams>>({});
   const { selectedRowKeys, rowSelection, clearSelectedRowKeys } =
     useTableSelection<OrderItem>();
 
+  // 显示发货对话框
+  const openShipModal = (item: OrderItem) => {
+    setActiveOrder(item);
+    setIsShipModal(true);
+  };
+
   // 搜索
-  const onSearch = (values: FormValues) => {};
+  const onSearch = (values: FormValues) => {
+    const params: Partial<OrderListParams> = {
+      ...(values.orderNo ? { orderNo: values.orderNo as string } : {}),
+      ...(values.status !== undefined &&
+      values.status !== "" &&
+      values.status !== 99
+        ? { status: values.status as OrderStatus }
+        : {}),
+    };
+    setSearchParams(params);
+    getOrders(1, pagination.pageSize, params);
+  };
 
   // 删除
   const handleDel = async (id?: number) => {
@@ -144,8 +166,9 @@ const Orders = () => {
   const getOrders = async (
     page = pagination.page,
     pageSize = pagination.pageSize,
+    params: Partial<OrderListParams> = searchParams,
   ) => {
-    const { data: res } = await shopApi.orders({ page, pageSize });
+    const { data: res } = await shopApi.orders({ page, pageSize, ...params });
     console.log(res.data.list);
     setList(res.data.list);
     setPagination(res.data.pagination);
@@ -191,6 +214,14 @@ const Orders = () => {
             <OrderProductsExpand items={record.items} />
           ),
         }}
+      />
+
+      {/* 发货对话框 */}
+      <OrderShipModal
+        open={isShipModal}
+        id={activeOrder?.id}
+        onCancel={() => setIsShipModal(false)}
+        onSuccess={() => getOrders()}
       />
     </div>
   );

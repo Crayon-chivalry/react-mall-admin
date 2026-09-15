@@ -197,6 +197,7 @@ export interface SpecsItem {
 }
 
 export interface SkuItem {
+  id?: number
   title: string
   specs: SpecsItem[]
   price: string
@@ -262,4 +263,6 @@ export interface OrderItem {
   items: OrderProductItem[]
   paymentType: string
   paidAt: string
+  expressCompany: string
+  shippingNo: string
 }

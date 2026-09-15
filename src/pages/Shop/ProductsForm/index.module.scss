@@ -3,11 +3,15 @@
   font-size: 18px;
   position: relative;
   color: $color-heading;
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  font-weight: 600;
 
   &::before {
     content: "";
     position: absolute;
-    inset: 50% auto auto 0; 
+    inset: 50% auto auto 0;
     width: 8px;
     height: 80%;
     border-radius: 99px;
@@ -30,37 +34,4 @@
   margin-bottom: 4px;
   font-size: 14px;
   color: $color-heading;
-}
-
-.sku-list {
-  .sku-card {
-    margin-bottom: 16px;
-    border-radius: 8px;
-    border: 1px solid #e8e8e8;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-
-    .sku-card-title {
-      font-weight: 600;
-      font-size: 15px;
-    }
-  }
-
-  .spec-list {
-    margin-top: 20px;
-    padding: 16px;
-    background-color: #f9f9fb;
-    border-radius: 8px;
-    border: 1px dashed #e0e0e0;
-  }
-
-  .spec-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-  }
-
-  .spec-name {
-    width: 130px;
-  }
 }

@@ -3,7 +3,7 @@ import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import type { SkuItem } from "@/api/types";
 import UploadImages from "@/components/UploadImages";
-import styles from "../index.module.scss";
+import styles from "./index.module.scss";
 
 const EMPTY_SKU: SkuItem = {
   title: "",

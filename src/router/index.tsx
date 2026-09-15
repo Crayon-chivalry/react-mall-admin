@@ -12,6 +12,7 @@ import Shop from "@/pages/Shop";
 import ProductsForm from "@/pages/Shop/ProductsForm";
 import Categorize from "@/pages/Shop/Categorize";
 import Orders from "@/pages/Shop/Orders";
+import OrderDetails from "@/pages/Shop/OrderDetails";
 import Setting from "@/pages/System";
 import Slider from "@/pages/Content/Slider";
 import Entries from "@/pages/Content/Entries";
@@ -76,6 +77,11 @@ const router = createBrowserRouter([
             path: "orders",
             element: <Orders />,
             handle: { title: "订单列表" },
+          },
+          {
+            path: "order-details",
+            element: <OrderDetails />,
+            handle: { title: "订单详情" },
           },
         ],
       },
