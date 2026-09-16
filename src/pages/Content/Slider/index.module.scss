@@ -1,9 +1,6 @@
 .banners {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $space-6;
-  
   .banner {
+    height: 100%;
     border-radius: $radius-6;
     overflow: hidden;
     background-color: #fff;
@@ -26,13 +23,20 @@
     padding: $space-4;
     
     .banner-title {
+      min-width: 0;
       font-size: 16px;
       color: $color-heading;
+      overflow-wrap: anywhere;
     }
 
     .banner-link {
       margin-top: $space-2;
       font-size: 12px;
+
+      span {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
     }
 
     .banner-row {

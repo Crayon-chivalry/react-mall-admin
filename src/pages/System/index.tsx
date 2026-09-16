@@ -40,9 +40,14 @@ const Setting = () => {
         des="管理全局站点参数、联系信息以及高级技术配置"
       />
 
-      <Row gutter={24}>
+      <Row
+        gutter={[
+          { xs: 0, sm: 16, lg: 24 },
+          { xs: 16, sm: 16, lg: 24 },
+        ]}
+      >
         {/* Left */}
-        <Col span={16}>
+        <Col xs={24} lg={16}>
           <Flex vertical={true} gap="large">
             {/* 基本信息 */}
             <div className="app-card">
@@ -53,15 +58,15 @@ const Setting = () => {
                 />
                 <h2>基本信息</h2>
               </div>
-              <Row gutter={24}>
-                <Col span={12}>
+              <Row gutter={[{ xs: 0, md: 16 }, { xs: 16, md: 16 }]}>
+                <Col xs={24} md={12}>
                   <div className={styles["form-item"]}>
                     <h3>站点名称</h3>
                     <Input placeholder="输入站点名称" />
                     <p>用于浏览器标签页和主页显示的标题</p>
                   </div>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                   <div className={styles["form-item"]}>
                     <h3>站点描述</h3>
                     <Input placeholder="输入简短的站点描述..." />
@@ -112,22 +117,32 @@ const Setting = () => {
                   <CopyOutlined />
                 </Flex>
               </div>
-              <div className={styles["total"]}>
-                <div className={styles["total-item"]}>
-                  <div className={styles["total-label"]}>Webhook URL</div>
-                  <div>https://api.ledgerpro.io/hook</div>
-                </div>
-                <div className={styles["total-item"]}>
-                  <div className={styles["total-label"]}>重定向网关</div>
-                  <div>gateway.ledgerpro.io</div>
-                </div>
-              </div>
+              <Row
+                className={styles["total"]}
+                gutter={[
+                  { xs: 0, sm: 16, lg: 24 },
+                  { xs: 16, sm: 16, lg: 24 },
+                ]}
+              >
+                <Col xs={24} md={12}>
+                  <div className={styles["total-item"]}>
+                    <div className={styles["total-label"]}>Webhook URL</div>
+                    <div>https://api.ledgerpro.io/hook</div>
+                  </div>
+                </Col>
+                <Col xs={24} md={12}>
+                  <div className={styles["total-item"]}>
+                    <div className={styles["total-label"]}>重定向网关</div>
+                    <div>gateway.ledgerpro.io</div>
+                  </div>
+                </Col>
+              </Row>
             </div>
           </Flex>
         </Col>
 
         {/* Right */}
-        <Col span={8}>
+        <Col xs={24} lg={8}>
           <Flex vertical={true} gap="large">
             {/* 系统状态 */}
             <div className="app-card">

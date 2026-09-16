@@ -76,10 +76,18 @@ interface HandleTitle {
 interface MainHeaderProps {
   collapsed: boolean;
   isMobile: boolean;
+  mobileMenuOpen: boolean;
   onToggle: () => void;
+  onMobileMenuToggle: () => void;
 }
 
-const MainHeader = ({ collapsed, isMobile, onToggle }: MainHeaderProps) => {
+const MainHeader = ({
+  collapsed,
+  isMobile,
+  mobileMenuOpen,
+  onToggle,
+  onMobileMenuToggle,
+}: MainHeaderProps) => {
   const { user, signOut } = useUserStore();
   const { menus } = useMenuStore();
   const location = useLocation();
@@ -138,13 +146,20 @@ const MainHeader = ({ collapsed, isMobile, onToggle }: MainHeaderProps) => {
   return (
     <Header className={styles["header"]}>
       <Flex gap="middle">
-        {!isMobile &&
+        {isMobile ? (
+          <MenuUnfoldOutlined
+            className={styles["icon"]}
+            onClick={onMobileMenuToggle}
+            aria-label={mobileMenuOpen ? "关闭菜单" : "打开菜单"}
+          />
+        ) : (
           (collapsed ? (
             <MenuUnfoldOutlined onClick={onToggle} />
           ) : (
             <MenuFoldOutlined onClick={onToggle} />
-          ))}
-        <Breadcrumb items={breadcrumbItems} />
+          ))
+        )}
+        {!isMobile && <Breadcrumb items={breadcrumbItems} />}
       </Flex>
       <div className={styles["header-content"]}>
         {!isMobile && (

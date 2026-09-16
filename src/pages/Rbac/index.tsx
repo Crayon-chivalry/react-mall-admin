@@ -170,6 +170,7 @@ const Roles = () => {
         columns={columns}
         dataSource={rolesList}
         rowKey="id"
+        scroll={{ x: true }}
       />
 
       {/* 角色表单 */}

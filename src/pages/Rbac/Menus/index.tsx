@@ -130,7 +130,7 @@ const Menus = () => {
       <TableCard<MenuItem>
         columns={columns}
         dataSource={menusList}
-        rowKey="id"
+        rowKey="id"scroll={{ x: true }}
       />
 
       {/* 菜单表单 */}

@@ -7,6 +7,8 @@ import {
   App,
   Tag,
   Image,
+  Row,
+  Col,
   type TableProps,
 } from "antd";
 import { PlusOutlined, RiseOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -249,32 +251,49 @@ const Products = () => {
       </PageHeader>
 
       {/* 数据汇总 */}
-      <div className={styles["data"]}>
-        <div className={styles["data-total"]}>
-          <div>总销售额</div>
-          <div className={styles["total-amount"]}>￥25,000</div>
-          <div className={styles["total-change"]}>
-            <RiseOutlined />
-            12%
-          </div>
-        </div>
-        <div className={styles["data-list"]}>
-          {dataList.map((item, index) => (
-            <div className={styles["data-item"]} key={index}>
-              <img
-                src={item.icon}
-                alt={item.title}
-                className={styles["item-icon"]}
-              />
-              <div className={styles["item-label"]}>{item.title}</div>
-              <div className={styles["item-value"]}>
-                {item.value}
-                <span>{item.symbol}</span>
-              </div>
+      <Row
+        className={styles["data"]}
+        align="stretch"
+        gutter={[
+          { xs: 0, sm: 16, lg: 24 },
+          { xs: 16, sm: 16, lg: 24 },
+        ]}
+      >
+        <Col xs={24} lg={8}>
+          <div className={styles["data-total"]}>
+            <div>总销售额</div>
+            <div className={styles["total-amount"]}>￥25,000</div>
+            <div className={styles["total-change"]}>
+              <RiseOutlined />
+              12%
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        </Col>
+        <Col xs={24} lg={16}>
+          <Row
+            className={styles["data-list"]}
+            align="stretch"
+            gutter={[{ xs: 0, sm: 16, lg: 24 }, { xs: 16, sm: 16, lg: 24 }]}
+          >
+            {dataList.map((item, index) => (
+              <Col xs={24} sm={8} key={index}>
+                <div className={styles["data-item"]}>
+                  <img
+                    src={item.icon}
+                    alt={item.title}
+                    className={styles["item-icon"]}
+                  />
+                  <div className={styles["item-label"]}>{item.title}</div>
+                  <div className={styles["item-value"]}>
+                    {item.value}
+                    <span>{item.symbol}</span>
+                  </div>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </Col>
+      </Row>
 
       {/* 筛选 */}
       <TableFiltering filterList={filterList} onSubmit={onSearch} />

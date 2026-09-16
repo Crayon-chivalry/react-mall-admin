@@ -35,7 +35,9 @@ const MainLayout = () => {
   const { menus, setMenus } = useMenuStore();
   const [loading, setLoading] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const screens = useBreakpoint();
+  const isMobile = screens.md === false;
 
   const getRouters = async () => {
     try {
@@ -67,12 +69,19 @@ const MainLayout = () => {
 
   return (
     <Layout>
-      <MainSider collapsed={collapsed || screens.md === false} />
+      <MainSider
+        collapsed={collapsed || isMobile}
+        isMobile={isMobile}
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+      />
       <Layout>
         <MainHeader
-          collapsed={collapsed || screens.md === false}
-          isMobile={screens.md === false}
+          collapsed={collapsed || isMobile}
+          isMobile={isMobile}
+          mobileMenuOpen={mobileMenuOpen}
           onToggle={() => setCollapsed((current) => !current)}
+          onMobileMenuToggle={() => setMobileMenuOpen((current) => !current)}
         />
         <Content className={styles["content"]}>
           <Outlet />

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Layout, Menu, type MenuProps } from "antd";
+import { Drawer, Layout, Menu, type MenuProps } from "antd";
 
 import MenuIcon from "@/components/MenuIcon";
 import useMenuStore from "@/store/menuStore";
@@ -13,6 +13,9 @@ const { Sider } = Layout;
 
 interface MainSiderProps {
   collapsed: boolean;
+  isMobile: boolean;
+  open: boolean;
+  onClose: () => void;
 }
 
 const buildMenuItems = (menus: AdminMenuItem[] = []): SiderMenuItem[] => {
@@ -90,7 +93,7 @@ const findOpenKey = (pathname: string, pathOpenKeyMap: Map<string, string>) => {
   return matchedKey;
 };
 
-const MainSider = ({ collapsed }: MainSiderProps) => {
+const MainSider = ({ collapsed, isMobile, open, onClose }: MainSiderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { menus } = useMenuStore();
@@ -120,6 +123,7 @@ const MainSider = ({ collapsed }: MainSiderProps) => {
   const onMenuClick: MenuProps["onClick"] = ({ key }) => {
     if (typeof key === "string" && key.startsWith("/")) {
       navigate(key);
+      onClose();
     }
   };
 
@@ -135,19 +139,17 @@ const MainSider = ({ collapsed }: MainSiderProps) => {
     setOpenKeys([latestOpenKey]);
   };
 
-  return (
-    <Sider
-      collapsed={collapsed}
-      className={styles["sider"]}
-      width="250"
-    >
-      <div className={styles["sider-top"]}>
+  const menuContent = (
+    <>
+      <div
+        className={`${styles["sider-top"]} ${(collapsed && !isMobile) && styles["sider-top-center"]}`}
+      >
         <img
           src="/src/assets/images/logo.png"
           alt="logo"
           className={styles["logo"]}
         />
-        {!collapsed && (
+        {(!collapsed || isMobile) && (
           <div>
             <div className={styles["sider-title"]}>管理系统</div>
             <div className={styles["sider-label"]}>management system</div>
@@ -164,6 +166,27 @@ const MainSider = ({ collapsed }: MainSiderProps) => {
         onClick={onMenuClick}
         onOpenChange={onOpenChange}
       />
+    </>
+  );
+
+  if (isMobile) {
+    return (
+      <Drawer
+        open={open}
+        onClose={onClose}
+        placement="left"
+        width={250}
+        closable={false}
+        styles={{ body: { padding: 0 } }}
+      >
+        {menuContent}
+      </Drawer>
+    );
+  }
+
+  return (
+    <Sider collapsed={collapsed} className={styles["sider"]} width="250">
+      {menuContent}
     </Sider>
   );
 };

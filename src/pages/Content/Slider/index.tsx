@@ -8,6 +8,7 @@ import {
   Flex,
   Popconfirm,
   Tag,
+  Empty,
   App,
 } from "antd";
 import { formatLocalTime } from "@/utils/date";
@@ -119,17 +120,21 @@ const Slider = () => {
       <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
 
       {/* 列表 */}
-      <div className={styles["banners"]}>
+      <Row
+        className={styles["banners"]}
+        gutter={[{ xs: 0, sm: 16, lg: 24 }, { xs: 16, sm: 16, lg: 24 }]}
+      >
         {banners.map((item) => (
-          <div className={styles["banner"]} key={item.id}>
-            <div className={styles["banner-header"]}>
-              <img
-                src={item.imageUrl}
-                alt="cover"
-                className={styles["banner-cover"]}
-              />
-            </div>
-            <div className={styles["banner-content"]}>
+          <Col xs={24} sm={12} xl={8} key={item.id}>
+            <div className={styles["banner"]}>
+              <div className={styles["banner-header"]}>
+                <img
+                  src={item.imageUrl}
+                  alt="cover"
+                  className={styles["banner-cover"]}
+                />
+              </div>
+              <div className={styles["banner-content"]}>
               <Flex gap="small" align="center">
                 <Tag color={item.isEnabled ? "green" : "red"}>
                   {item.isEnabled ? "展示中" : "已下架"}
@@ -155,33 +160,36 @@ const Slider = () => {
                 </Col>
               </Row>
               <Divider />
-              <Flex justify="space-between">
-                <Flex gap="middle" align="center">
-                  <EditOutlined onClick={() => handleShowForm(item)} />
+                <Flex justify="space-between">
+                  <Flex gap="middle" align="center">
+                    <EditOutlined onClick={() => handleShowForm(item)} />
+                    <Popconfirm
+                      title="提示"
+                      description={item.isEnabled ? "确定要下架吗?" : "确定要展示吗?"}
+                      onConfirm={() => handleUpStatus(item.id, item.isEnabled)}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      {item.isEnabled ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+                    </Popconfirm>
+                  </Flex>
                   <Popconfirm
                     title="提示"
-                    description={item.isEnabled ? "确定要下架吗?" : "确定要展示吗?"}
-                    onConfirm={() => handleUpStatus(item.id ,item.isEnabled)}
+                    description="确定要删除吗?"
+                    onConfirm={() => handleDelete(item.id)}
                     okText="Yes"
                     cancelText="No"
                   >
-                    { item.isEnabled ?  <EyeInvisibleOutlined /> : <EyeOutlined />}
+                    <DeleteOutlined />
                   </Popconfirm>
                 </Flex>
-                <Popconfirm
-                  title="提示"
-                  description="确定要删除吗?"
-                  onConfirm={() => handleDelete(item.id)}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <DeleteOutlined />
-                </Popconfirm>
-              </Flex>
+              </div>
             </div>
-          </div>
+          </Col>
         ))}
-      </div>
+      </Row>
+
+      {banners.length === 0 && <Empty />}
 
       {/* 添加 / 编辑 表单抽屉 */}
       <SliderForm ref={formRef} onSuccess={onSuccess} />
