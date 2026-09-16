@@ -74,3 +74,10 @@
   overflow-y: auto;
   color: $color-text;
 }
+
+
+@media (max-width: 768px) {
+  .content {
+    padding: $space-3;
+  }
+}

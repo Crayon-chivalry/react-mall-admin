@@ -28,3 +28,13 @@ body {
   color: $color-text;
   background-color: $color-bg;
 }
+
+@media (max-width: 768px) {
+  .app-card {
+    padding: $space-3;
+  }
+
+  .table-card {
+    padding: $space-3;
+  }
+}
