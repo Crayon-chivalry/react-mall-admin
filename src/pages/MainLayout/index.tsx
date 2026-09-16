@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { Layout, Spin } from "antd";
+import { Grid, Layout, Spin } from "antd";
 import useMenuStore from "@/store/menuStore";
 import type { MenuItem } from "@/api/types";
 
@@ -12,6 +12,7 @@ import { rbacApi } from "@/api/rbacApi";
 
 
 const { Content } = Layout;
+const { useBreakpoint } = Grid;
 
 const collectAllowedPaths = (menus: MenuItem[] = []): string[] => {
   return menus.flatMap((item) => {
@@ -33,6 +34,8 @@ const MainLayout = () => {
   const location = useLocation();
   const { menus, setMenus } = useMenuStore();
   const [loading, setLoading] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
+  const screens = useBreakpoint();
 
   const getRouters = async () => {
     try {
@@ -64,9 +67,13 @@ const MainLayout = () => {
 
   return (
     <Layout>
-      <MainSider></MainSider>
+      <MainSider collapsed={collapsed || screens.md === false} />
       <Layout>
-        <MainHeader></MainHeader>
+        <MainHeader
+          collapsed={collapsed || screens.md === false}
+          isMobile={screens.md === false}
+          onToggle={() => setCollapsed((current) => !current)}
+        />
         <Content className={styles["content"]}>
           <Outlet />
         </Content>

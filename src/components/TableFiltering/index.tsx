@@ -33,10 +33,20 @@ const TableFiltering = ({ filterList, onSubmit }: TableFilteringProps) => {
 
   return (
     <div className={styles["filter-card"]}>
-      <Form labelCol={{ span: 6, style: { whiteSpace: 'nowrap' } }} form={form} onFinish={onFinish}>
-        <Row gutter={24}>
+      <Form
+        labelWrap
+        labelCol={{ xs: { span: 8 }, sm: { span: 6 } }}
+        form={form}
+        onFinish={onFinish}
+      >
+        <Row
+          gutter={[
+            { xs: 8, sm: 16, lg: 24 },
+            { xs: 8, sm: 16, lg: 24 },
+          ]}
+        >
           {filterList.map((item) => (
-            <Col span={8} key={item.name}>
+            <Col xs={24} sm={12} lg={8} key={item.name}>
               <Form.Item
                 label={item.label}
                 name={item.name}
@@ -48,7 +58,7 @@ const TableFiltering = ({ filterList, onSubmit }: TableFilteringProps) => {
               </Form.Item>
             </Col>
           ))}
-          <Col span={8}>
+          <Col xs={24} sm={12} lg={8}>
             <Form.Item label={null}>
               <Flex gap="middle" wrap>
                 <Button type="primary" htmlType="submit">

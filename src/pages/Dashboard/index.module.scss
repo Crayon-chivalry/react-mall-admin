@@ -8,6 +8,13 @@
   }
 }
 
+@media (max-width: 575px) {
+  .dashboard-row,
+  .dashboard-main-row {
+    row-gap: $space-4;
+  }
+}
+
 // 数据汇总
 .total-item {
   @include card($space-6);

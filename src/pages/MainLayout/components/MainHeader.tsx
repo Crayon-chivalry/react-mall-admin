@@ -1,12 +1,20 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useMatches } from "react-router-dom";
 import useUserStore from "@/store/userStore";
 import useMenuStore from "@/store/menuStore";
 import type { MenuItem as AdminMenuItem } from "@/api/types";
 
-import { Layout, Breadcrumb, Dropdown } from "antd";
+import { Layout, Breadcrumb, Dropdown, Flex } from "antd";
 import type { MenuProps } from "antd";
-import { BellOutlined, QuestionCircleOutlined, DownOutlined } from "@ant-design/icons";
+import {
+  BellOutlined,
+  FullscreenOutlined,
+  FullscreenExitOutlined,
+  DownOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+} from "@ant-design/icons";
+import screenfull from "screenfull";
 
 import styles from "../index.module.scss";
 
@@ -65,11 +73,39 @@ interface HandleTitle {
   title?: string;
 };
 
-const MainHeader = () => {
+interface MainHeaderProps {
+  collapsed: boolean;
+  isMobile: boolean;
+  onToggle: () => void;
+}
+
+const MainHeader = ({ collapsed, isMobile, onToggle }: MainHeaderProps) => {
   const { user, signOut } = useUserStore();
   const { menus } = useMenuStore();
   const location = useLocation();
   const matches = useMatches();
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    if (!screenfull.isEnabled) return;
+
+    const handleFullscreenChange = () => {
+      setIsFullscreen(screenfull.isFullscreen);
+    };
+
+    handleFullscreenChange();
+    screenfull.on("change", handleFullscreenChange);
+
+    return () => {
+      screenfull.off("change", handleFullscreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (screenfull.isEnabled) {
+      screenfull.toggle();
+    }
+  };
 
   const menuClick: MenuProps["onClick"] = (menuItem) => {
     // 退出登录
@@ -101,10 +137,32 @@ const MainHeader = () => {
 
   return (
     <Header className={styles["header"]}>
-      <Breadcrumb items={breadcrumbItems} />
+      <Flex gap="middle">
+        {!isMobile &&
+          (collapsed ? (
+            <MenuUnfoldOutlined onClick={onToggle} />
+          ) : (
+            <MenuFoldOutlined onClick={onToggle} />
+          ))}
+        <Breadcrumb items={breadcrumbItems} />
+      </Flex>
       <div className={styles["header-content"]}>
-        <QuestionCircleOutlined className={styles["icon"]} />
-        <BellOutlined className={styles["icon"]} />
+        {!isMobile && (
+          <>
+            {isFullscreen ? (
+              <FullscreenExitOutlined
+                className={styles["icon"]}
+                onClick={toggleFullscreen}
+              />
+            ) : (
+              <FullscreenOutlined
+                className={styles["icon"]}
+                onClick={toggleFullscreen}
+              />
+            )}
+            <BellOutlined className={styles["icon"]} />
+          </>
+        )}
         {/* 头像，下拉框 */}
         <Dropdown menu={{ items, onClick: menuClick }}>
           <div className={styles["dropdown-row"]}>

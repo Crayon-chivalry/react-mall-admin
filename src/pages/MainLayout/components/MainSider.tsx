@@ -5,12 +5,15 @@ import { Layout, Menu, type MenuProps } from "antd";
 import MenuIcon from "@/components/MenuIcon";
 import useMenuStore from "@/store/menuStore";
 import type { MenuItem as AdminMenuItem } from "@/api/types";
-
 import styles from "../index.module.scss";
 
 type SiderMenuItem = Required<MenuProps>["items"][number];
 
 const { Sider } = Layout;
+
+interface MainSiderProps {
+  collapsed: boolean;
+}
 
 const buildMenuItems = (menus: AdminMenuItem[] = []): SiderMenuItem[] => {
   return menus
@@ -87,7 +90,7 @@ const findOpenKey = (pathname: string, pathOpenKeyMap: Map<string, string>) => {
   return matchedKey;
 };
 
-const MainSider = () => {
+const MainSider = ({ collapsed }: MainSiderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { menus } = useMenuStore();
@@ -133,17 +136,23 @@ const MainSider = () => {
   };
 
   return (
-    <Sider className={styles["sider"]} width="250">
+    <Sider
+      collapsed={collapsed}
+      className={styles["sider"]}
+      width="250"
+    >
       <div className={styles["sider-top"]}>
         <img
           src="/src/assets/images/logo.png"
           alt="logo"
           className={styles["logo"]}
         />
-        <div>
-          <div className={styles["sider-title"]}>管理系统</div>
-          <div className={styles["sider-label"]}>management system</div>
-        </div>
+        {!collapsed && (
+          <div>
+            <div className={styles["sider-title"]}>管理系统</div>
+            <div className={styles["sider-label"]}>management system</div>
+          </div>
+        )}
       </div>
 
       <Menu

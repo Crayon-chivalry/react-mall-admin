@@ -186,6 +186,7 @@ const Categorize = () => {
         columns={columns}
         dataSource={list}
         rowKey="id"
+        scroll={{ x: true }}
         pagination={pagination}
         onChange={handleTableChange}
       />

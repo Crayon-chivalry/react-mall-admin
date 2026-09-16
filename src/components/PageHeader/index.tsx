@@ -28,7 +28,7 @@ const PageHeader = ({ title, des, children, showBack = false }: PageHeaderProps)
           </button>
         )}
         <div className={styles["header-info"]}>
-          <h1 className={styles["title"]}>{title}</h1>
+          <h1 className={styles["title"]} title={title}>{title}</h1>
           <p className={styles["des"]}>{des}</p>
         </div>
       </div>

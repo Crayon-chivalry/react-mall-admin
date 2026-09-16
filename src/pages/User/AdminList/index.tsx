@@ -191,6 +191,7 @@ const User = () => {
         columns={columns}
         dataSource={list}
         rowKey="userId"
+        scroll={{ x: true }}
         pagination={pagination}
         onChange={handleTableChange}
       />
