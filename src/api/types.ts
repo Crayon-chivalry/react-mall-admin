@@ -267,3 +267,12 @@ export interface OrderItem {
   expressCompany: string
   shippingNo: string
 }
+
+
+export interface resetParams {
+  users?: boolean
+  products?: boolean
+  orders?: boolean
+  logs?: boolean
+  contents?: boolean
+}

@@ -1,23 +1,30 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Col, Row, Input, Divider, Flex, Button, Tag, Switch, App } from "antd";
-import { CopyOutlined, InsuranceOutlined } from "@ant-design/icons";
+import {
+  CopyOutlined,
+  InsuranceOutlined,
+  WarningOutlined,
+} from "@ant-design/icons";
 
 import styles from "./index.module.scss";
 import { systemApi } from "@/api/systemApi";
 import PageHeader from "@/components/PageHeader";
 import UploadImages from "@/components/UploadImages";
+import ClearDataModal from "./components/ClearDataModal";
 
 const Setting = () => {
   const { message } = App.useApp();
+  const [defaultAvatar, setDefaultAvatar] = useState<string | null>(null);
+  const [isClearModal, setIsClearModal] = useState<boolean>(false);
 
   // 获取系统设置
   const getSettings = async () => {
     const { data: res } = await systemApi.settings();
-    console.log(res.data.list);
+    setDefaultAvatar(res.data.defaultAvatar);
   };
 
   // 设置默认头像
-  const setDefaultAvatar = async (urls: string[]) => {
+  const uploadDefaultAvatar = async (urls: string[]) => {
     const { data: res } = await systemApi.defaultAvatar(urls[0]);
     message.success(res.message);
   };
@@ -65,8 +72,8 @@ const Setting = () => {
               <Divider />
               <div className={styles["logo"]}>
                 <UploadImages
-                  initialUrls={[]}
-                  onUploadSuccess={(urls) => setDefaultAvatar(urls)}
+                  initialUrls={defaultAvatar ? [defaultAvatar] : []}
+                  onUploadSuccess={(urls) => uploadDefaultAvatar(urls)}
                 />
                 <div className={styles["logo-info"]}>
                   <h3>默认头像</h3>
@@ -146,7 +153,14 @@ const Setting = () => {
                     <div>缓存占用</div>
                     <div>124.5 MB</div>
                   </Flex>
-                  <Button>清除缓存</Button>
+                  <Button
+                    color="danger"
+                    variant="solid"
+                    icon={<WarningOutlined />}
+                    onClick={() => setIsClearModal(true)}
+                  >
+                    清空数据
+                  </Button>
                 </Flex>
               </Flex>
             </div>
@@ -188,6 +202,12 @@ const Setting = () => {
           </Flex>
         </Col>
       </Row>
+
+      {/* 清空数据对话框 */}
+      <ClearDataModal
+        open={isClearModal}
+        onClose={() => setIsClearModal(false)}
+      />
     </div>
   );
 };

@@ -60,6 +60,7 @@ const OrderShipModal = ({open, id, onCancel, onSuccess}: ShipModalProps) => {
   return (
     <Modal
       title="发货"
+      footer={null}
       open={open}
       onCancel={onCancel}
     >

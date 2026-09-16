@@ -1,5 +1,5 @@
 import request from "./request";
-import type { ApiResponse, LogsListParams } from "./types";
+import type { ApiResponse, LogsListParams, resetParams } from "./types";
 
 export const systemApi = {
   // 日志列表
@@ -20,5 +20,10 @@ export const systemApi = {
   // 设置默认头像
   defaultAvatar: (avatar: string) => {
     return request.put<ApiResponse>("/system/settings/default-avatar", {avatar})
+  },
+
+  // 清空重置业务数据
+  reset: (params: resetParams) => {
+    return request.post<ApiResponse>("/system/reset", params)
   }
 }
