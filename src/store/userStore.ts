@@ -36,7 +36,7 @@ const useUserStore = create<UserStateInterface>()(
       })),
   }),
   {
-    name: 'user-storage'
+    name: 'user-admin-storage'
   }
 )
 );
