@@ -112,7 +112,6 @@ export interface MenuItem {
   type: number
   parentId: number | null
   path: string
-  component: string
   icon: string
   permissionCode: string
   sort: number
