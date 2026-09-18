@@ -223,7 +223,7 @@ export interface ProductItem {
   specType: "single" | "multi"
 }
 
-export type OrderStatus = "pending" | "paid" | "shipped" | "completed"
+export type OrderStatus = "pending" | "paid" | "shipped" | "completed" | "cancelled"
 
 export interface OrderShipParams {
   expressCompany: string

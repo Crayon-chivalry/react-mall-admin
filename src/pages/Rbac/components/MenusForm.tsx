@@ -128,7 +128,7 @@ const MenusForm = forwardRef<MenusFormRef, MenusFormProps>((props, ref) => {
           <Form.Item<MenuItem>
             label="父级菜单"
             name="parentId"
-            rules={rules.parentId}
+            // rules={rules.parentId}
           >
             <TreeSelect
               placeholder="请选择父级菜单"
@@ -147,13 +147,13 @@ const MenusForm = forwardRef<MenusFormRef, MenusFormProps>((props, ref) => {
             >
               <Input size="large" placeholder="请输入路由路径" />
             </Form.Item>
-            <Form.Item<MenuItem>
+            {/* <Form.Item<MenuItem>
               label="组件路径"
               name="component"
               rules={rules.component}
             >
               <Input size="large" placeholder="请输入组件路径" />
-            </Form.Item>
+            </Form.Item> */}
           </>
         {/* )} */}
         {/* 类型操作项需要设置权限编码 */}

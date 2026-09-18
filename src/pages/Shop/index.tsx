@@ -35,19 +35,19 @@ const dataList = [
   {
     icon: "/src/assets/images/shop-data1.png",
     title: "总商品",
-    value: "2614",
+    value: "0",
     symbol: "件",
   },
   {
     icon: "/src/assets/images/shop-data1.png",
     title: "今日销量",
-    value: "1482",
+    value: "0",
     symbol: "件",
   },
   {
     icon: "/src/assets/images/shop-data2.png",
     title: "缺货警报",
-    value: "12",
+    value: "0",
     symbol: "款",
   },
 ];
@@ -110,6 +110,14 @@ const Products = () => {
             onClick={() => navigate(`/shop/products-form?id=${item.id}`)}
           >
             编辑
+          </Button>
+          <Button
+            color={item.isOnSale ? "danger" : "green"}
+            variant="text"
+            size="small"
+            onClick={() => handleStatus(item.id, item.isOnSale)}
+          >
+            { item.isOnSale ? "下架" : "上架" }
           </Button>
           <Popconfirm
             title="提示"
@@ -218,6 +226,13 @@ const Products = () => {
     setPagination(res.data.pagination);
   };
 
+  // 上架 / 下架
+  const handleStatus = async (id: number, isOnSale: boolean) => {
+    const { data: res } = await shopApi.changeProductStatus(id, !isOnSale);
+    message.success(res.message);
+    getList();
+  }
+
   // 删除
   const handleDel = async (id?: number) => {
     const { data: res } = await shopApi.deletesProduct(
@@ -262,7 +277,7 @@ const Products = () => {
         <Col xs={24} lg={8}>
           <div className={styles["data-total"]}>
             <div>总销售额</div>
-            <div className={styles["total-amount"]}>￥25,000</div>
+            <div className={styles["total-amount"]}>￥0,000</div>
             <div className={styles["total-change"]}>
               <RiseOutlined />
               12%

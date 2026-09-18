@@ -49,8 +49,15 @@ const statusList = defineStatusOptions<OrderItem["status"]>([
   { label: "待发货", value: "paid", color: "green" },
   { label: "已发货", value: "shipped", color: "warning" },
   { label: "已完成", value: "completed" },
+  { label: "已取消", value: "cancelled", color: "red" },
 ]);
 const renderStatusTag = createStatusTagRenderer(statusList);
+
+// 付款类型
+const paymentMethods: Record<string, string> = {
+  alipay: "支付宝",
+  wechat: "微信支付",
+};
 
 const Orders = () => {
   // 配置项
@@ -71,6 +78,12 @@ const Orders = () => {
       dataIndex: "totalAmount",
       key: "totalAmount",
       render: (_, { totalAmount }) => `￥${totalAmount}`,
+    },
+    {
+      title: "付款方式",
+      dataIndex: "paymentType",
+      key: "paymentType",
+      render: (_, { paymentType }) => paymentMethods[paymentType] || "-",
     },
     {
       title: "状态",

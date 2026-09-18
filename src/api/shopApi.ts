@@ -36,6 +36,11 @@ export const shopApi = {
     return request.delete<ApiResponse>(`/products`, { data: { ids } });
   },
 
+  // 修改商品上架状态
+  changeProductStatus: (id: number, isOnSale: boolean) => {
+    return request.patch<ApiResponse>(`/products/${id}/status`, {isOnSale});
+  },
+
   // 获取分类列表
   categoriesList: (params: CategoriesListParams) => {
     return request.get<ApiResponse>("/categories", { params });
